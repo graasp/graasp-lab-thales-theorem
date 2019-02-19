@@ -6,18 +6,20 @@ import {
   Circle,
   Text,
 } from 'react-konva';
+import {
+  lineStrokeWidth,
+  strokeWidth,
+  shadowBlur,
+  fontSize,
+} from '../../config/properties';
 
 const CircleTwo = ({
   points,
-  lineStrokeWidth,
   stroke,
-  strokeWidth,
-  shadowBlur,
   circleTwoPoints,
   themeColor,
   handleMouseEnter,
   handleMouseLeave,
-  fontSize,
 }) => (
   <Fragment>
     <Group>
@@ -83,15 +85,11 @@ CircleTwo.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired,
   })).isRequired,
-  shadowBlur: PropTypes.number.isRequired,
-  strokeWidth: PropTypes.number.isRequired,
-  lineStrokeWidth: PropTypes.number.isRequired,
   stroke: PropTypes.string.isRequired,
   themeColor: PropTypes.string.isRequired,
   circleTwoPoints: PropTypes.shape({}).isRequired,
   handleMouseEnter: PropTypes.func.isRequired,
   handleMouseLeave: PropTypes.func.isRequired,
-  fontSize: PropTypes.number.isRequired,
 };
 
 export default CircleTwo;

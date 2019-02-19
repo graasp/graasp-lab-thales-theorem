@@ -14,7 +14,14 @@ import Triangle from '../../components/Triangle';
 import CircleOne from '../../components/circles/CircleOne';
 import CircleTwo from '../../components/circles/CircleTwo';
 import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
-
+import {
+  color,
+  circleStroke,
+  strokeWidth,
+  shadowBlur,
+  fontSize,
+  radius,
+} from '../../config/properties';
 
 const styles = Styles;
 
@@ -45,17 +52,10 @@ class Main extends Component {
     } = this.props;
 
     const {
-      color,
       node,
       points,
       circleOnePoints,
       circleTwoPoints,
-      circleStroke,
-      fontSize,
-      radius,
-      strokeWidth,
-      shadowBlur,
-      lineStrokeWidth,
       isMouseInside,
     } = this.state;
 
@@ -114,31 +114,21 @@ class Main extends Component {
             <Layer>
               <CircleOne
                 circleOnePoints={circleOnePoints}
-                strokeWidth={strokeWidth}
-                shadowBlur={shadowBlur}
-                fill={themeColor}
                 points={points}
                 stroke={isMouseInside ? themeColor : circleStroke}
                 node={node}
-                lineStrokeWidth={lineStrokeWidth}
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
-                fontSize={fontSize}
               />
               <CircleTwo
                 circleTwoPoints={circleTwoPoints}
                 stroke={isMouseInside ? themeColor : circleStroke}
-                strokeWidth={strokeWidth}
-                shadowBlur={shadowBlur}
-                fill={themeColor}
                 points={points}
                 node={node}
-                lineStrokeWidth={lineStrokeWidth}
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
-                fontSize={fontSize}
               />
             </Layer>
           </Stage>
