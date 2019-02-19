@@ -11,6 +11,7 @@ import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
 import { toggleSideMenu } from '../../actions';
 import Triangle from '../../components/Triangle';
+import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
 
 
 const styles = Styles;
@@ -29,21 +30,23 @@ class Main extends Component {
       showHeader,
       showSideMenu,
       themeColor,
-      t,
     } = this.props;
 
     const {
       color,
       node,
       points,
-      width,
-      height,
       circleStroke,
       fontSize,
       radius,
       strokeWidth,
       shadowBlur,
     } = this.state;
+
+    const scale = Math.min(
+      window.innerWidth / CANVAS_VIRTUAL_WIDTH,
+      window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
+    );
 
     return (
       <main
@@ -70,7 +73,12 @@ class Main extends Component {
         }
 
         <div className="main-container">
-          <Stage width={width} height={height}>
+          <Stage
+            width={window.innerWidth}
+            height={window.innerHeight}
+            scalex={scale}
+            scaley={scale}
+          >
             <Triangle
               circleStroke={circleStroke}
               strokeWidth={strokeWidth}
@@ -89,7 +97,6 @@ class Main extends Component {
                   { x: points[5].x, y: points[5].y },
                 ]
               }
-              t={t}
             />
           </Stage>
         </div>
@@ -104,7 +111,6 @@ Main.propTypes = {
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
