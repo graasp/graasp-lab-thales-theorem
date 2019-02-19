@@ -14,6 +14,8 @@ export const AppState = {
     A: 'A',
     B: 'B',
     C: 'C',
+    D: 'D',
+    E: 'E',
   },
   points: [
     { x: 500, y: 100 },
@@ -23,8 +25,6 @@ export const AppState = {
     { x: 260, y: 450 },
     { x: 710, y: 450 },
   ],
-  width: 920,
-  height: 920,
   middleLine: [300, 300, 700, 300],
   bottomLine: [300, 450, 700, 450],
 };
