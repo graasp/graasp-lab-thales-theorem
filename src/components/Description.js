@@ -12,6 +12,7 @@ const Description = ({ node, t }) => (
 
 Description.propTypes = {
   t: PropTypes.func.isRequired,
+  node: PropTypes.shape({}).isRequired,
 };
 
 export default withTranslation()(Description);
