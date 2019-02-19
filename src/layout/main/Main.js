@@ -6,12 +6,22 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Stage } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
 import { toggleSideMenu } from '../../actions';
 import Triangle from '../../components/Triangle';
-
+import CircleOne from '../../components/circles/CircleOne';
+import CircleTwo from '../../components/circles/CircleTwo';
+import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
+import {
+  color,
+  circleStroke,
+  strokeWidth,
+  shadowBlur,
+  fontSize,
+  radius,
+} from '../../config/properties';
 
 const styles = Styles;
 
@@ -23,27 +33,36 @@ class Main extends Component {
     dispatchToggleSideMenu(open);
   }
 
+  handleMouseEnter = () => {
+    document.body.style.cursor = 'pointer';
+    this.setState({ isMouseInside: true });
+  }
+
+  handleMouseLeave = () => {
+    document.body.style.cursor = 'default';
+    this.setState({ isMouseInside: false });
+  }
+
   render() {
     const {
       classes,
       showHeader,
       showSideMenu,
       themeColor,
-      t,
     } = this.props;
 
     const {
-      color,
       node,
       points,
-      width,
-      height,
-      circleStroke,
-      fontSize,
-      radius,
-      strokeWidth,
-      shadowBlur,
+      circleOnePoints,
+      circleTwoPoints,
+      isMouseInside,
     } = this.state;
+
+    const scale = Math.min(
+      window.innerWidth / CANVAS_VIRTUAL_WIDTH,
+      window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
+    );
 
     return (
       <main
@@ -70,7 +89,12 @@ class Main extends Component {
         }
 
         <div className="main-container">
-          <Stage width={width} height={height}>
+          <Stage
+            width={window.innerWidth}
+            height={window.innerHeight}
+            scalex={scale}
+            scaley={scale}
+          >
             <Triangle
               circleStroke={circleStroke}
               strokeWidth={strokeWidth}
@@ -84,13 +108,29 @@ class Main extends Component {
                   { x: points[0].x, y: points[0].y },
                   { x: points[1].x, y: points[1].y },
                   { x: points[2].x, y: points[2].y },
-                  { x: points[3].x, y: points[3].y },
-                  { x: points[4].x, y: points[4].y },
-                  { x: points[5].x, y: points[5].y },
                 ]
               }
-              t={t}
             />
+            <Layer>
+              <CircleOne
+                circleOnePoints={circleOnePoints}
+                points={points}
+                stroke={isMouseInside ? themeColor : circleStroke}
+                node={node}
+                themeColor={themeColor}
+                handleMouseLeave={this.handleMouseLeave}
+                handleMouseEnter={this.handleMouseEnter}
+              />
+              <CircleTwo
+                circleTwoPoints={circleTwoPoints}
+                stroke={isMouseInside ? themeColor : circleStroke}
+                points={points}
+                node={node}
+                themeColor={themeColor}
+                handleMouseLeave={this.handleMouseLeave}
+                handleMouseEnter={this.handleMouseEnter}
+              />
+            </Layer>
           </Stage>
         </div>
       </main>
@@ -104,7 +144,6 @@ Main.propTypes = {
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

@@ -14,11 +14,12 @@ class MainView extends Component {
 
   render() {
     const { classes } = this.props;
+    const { node } = this.state;
 
     return (
       <div className={classes.root}>
         <Main />
-        <SideMenu />
+        <SideMenu node={node} />
       </div>
     );
   }

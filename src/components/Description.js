@@ -4,14 +4,15 @@ import PropTypes from 'prop-types';
 import Resume from './Resume';
 import './Description.css';
 
-const Description = ({ t }) => (
+const Description = ({ node, t }) => (
   <div className="description-container">
-    <Resume t={t} />
+    <Resume t={t} node={node} />
   </div>
 );
 
 Description.propTypes = {
   t: PropTypes.func.isRequired,
+  node: PropTypes.shape({}).isRequired,
 };
 
 export default withTranslation()(Description);
