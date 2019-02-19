@@ -26,6 +26,7 @@ class SideMenu extends Component {
       classes,
       theme,
       showSideMenu,
+      node,
       t,
     } = this.props;
 
@@ -48,7 +49,7 @@ class SideMenu extends Component {
             <h3>{t('Observe')}</h3>
           </div>
           <Divider />
-          <Description t={t} />
+          <Description t={t} node={node} />
         </Drawer>
       </Fragment>
     );
