@@ -14,8 +14,6 @@ export const AppState = {
     A: 'A',
     B: 'B',
     C: 'C',
-    Bprim: "B'",
-    Cprim: "C'",
   },
   points: [
     { x: 500, y: 100 },
