@@ -56,22 +56,22 @@ const Triangle = ({
       shadowBlur={shadowBlur}
     />
     <Text
-      x={points[3].x}
-      y={points[3].y}
+      x={points[0].x - 40}
+      y={points[0].y - 40}
       text={node.A}
       fontSize={fontSize}
       fill={color}
     />
     <Text
-      x={points[4].x}
-      y={points[4].y}
+      x={points[1].x - 40}
+      y={points[1].y + 20}
       text={node.B}
       fontSize={fontSize}
       fill={color}
     />
     <Text
-      x={points[5].x}
-      y={points[5].y}
+      x={points[2].x + 20}
+      y={points[2].y + 20}
       text={node.C}
       fontSize={fontSize}
       fill={color}
