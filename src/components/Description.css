@@ -19,3 +19,31 @@
 .SettingsModal-container button {
   outline: 0;
 }
+.formula-up, .formula-down {
+   font-size: 1.6rem;
+ }
+ .formula-divider {
+   margin-bottom: .1rem !important;
+ }
+.ab-side, .ac-side, .bc-side {
+  width: 26%;
+  display: inline-block;
+}
+.formula-equal {
+  float: right;
+}
+.mesure-title {
+  padding-top: 3rem;
+}
+.mesure-divider {
+  margin-bottom: -8px !important;
+}
+.mesure-side {
+  margin-bottom: 1.5rem;
+}
+.mesure-down {
+  margin-left: 1rem;
+}
+.mesure-up {
+  margin-left: -.7rem;
+}
