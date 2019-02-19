@@ -6,11 +6,13 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Stage } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
 import { toggleSideMenu } from '../../actions';
 import Triangle from '../../components/Triangle';
+import CircleOne from '../../components/circles/CircleOne';
+import CircleTwo from '../../components/circles/CircleTwo';
 import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
 
 
@@ -22,6 +24,16 @@ class Main extends Component {
   handleToggleSideMenu = open => () => {
     const { dispatchToggleSideMenu } = this.props;
     dispatchToggleSideMenu(open);
+  }
+
+  handleMouseEnter = () => {
+    document.body.style.cursor = 'pointer';
+    this.setState({ isMouseInside: true });
+  }
+
+  handleMouseLeave = () => {
+    document.body.style.cursor = 'default';
+    this.setState({ isMouseInside: false });
   }
 
   render() {
@@ -36,11 +48,15 @@ class Main extends Component {
       color,
       node,
       points,
+      circleOnePoints,
+      circleTwoPoints,
       circleStroke,
       fontSize,
       radius,
       strokeWidth,
       shadowBlur,
+      lineStrokeWidth,
+      isMouseInside,
     } = this.state;
 
     const scale = Math.min(
@@ -92,12 +108,39 @@ class Main extends Component {
                   { x: points[0].x, y: points[0].y },
                   { x: points[1].x, y: points[1].y },
                   { x: points[2].x, y: points[2].y },
-                  { x: points[3].x, y: points[3].y },
-                  { x: points[4].x, y: points[4].y },
-                  { x: points[5].x, y: points[5].y },
                 ]
               }
             />
+            <Layer>
+              <CircleOne
+                circleOnePoints={circleOnePoints}
+                strokeWidth={strokeWidth}
+                shadowBlur={shadowBlur}
+                fill={themeColor}
+                points={points}
+                stroke={isMouseInside ? themeColor : circleStroke}
+                node={node}
+                lineStrokeWidth={lineStrokeWidth}
+                themeColor={themeColor}
+                handleMouseLeave={this.handleMouseLeave}
+                handleMouseEnter={this.handleMouseEnter}
+                fontSize={fontSize}
+              />
+              <CircleTwo
+                circleTwoPoints={circleTwoPoints}
+                stroke={isMouseInside ? themeColor : circleStroke}
+                strokeWidth={strokeWidth}
+                shadowBlur={shadowBlur}
+                fill={themeColor}
+                points={points}
+                node={node}
+                lineStrokeWidth={lineStrokeWidth}
+                themeColor={themeColor}
+                handleMouseLeave={this.handleMouseLeave}
+                handleMouseEnter={this.handleMouseEnter}
+                fontSize={fontSize}
+              />
+            </Layer>
           </Stage>
         </div>
       </main>
