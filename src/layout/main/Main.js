@@ -6,7 +6,9 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Layer, Stage } from 'react-konva';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { Layer, Line, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
 import { toggleSideMenu } from '../../actions';
@@ -43,6 +45,59 @@ class Main extends Component {
     this.setState({ isMouseInside: false });
   }
 
+  handleClick = (e, circleShape) => {
+    const {
+      isDrawingMode,
+      circleOneShape,
+      circleTwoShape,
+      circleOnePoints,
+      circleTwoPoints,
+      points,
+    } = this.state;
+    if (!isDrawingMode) return;
+
+    let shapes;
+    // otherwise, add a new rectangle at the mouse position with 0 width and height,
+    if (circleShape === 'circleOne') {
+      shapes = circleOneShape;
+      if (shapes.length <= 1) {
+        shapes = [];
+        this.setState({ circleOneShape: shapes });
+      }
+    } else {
+      shapes = circleTwoShape;
+      if (shapes.length <= 1) {
+        shapes = [];
+        this.setState({ circleTwoShape: shapes });
+      }
+    }
+
+    const newX = circleShape === 'circleOne' ? circleOnePoints.x : circleTwoPoints.x;
+    const newY = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
+    shapes.push({
+      x: newX,
+      y: newY,
+      width: points[0].x,
+      height: circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y,
+    });
+    if (circleShape === 'circleOne') this.setState({ circleOneShape: shapes });
+    if (circleShape === 'circleTwo') this.setState({ circleTwoShape: shapes });
+  };
+
+  handleDrawingMode = () => {
+    const { isDrawingMode } = this.state;
+    this.setState({ isDrawingMode: !isDrawingMode }); // toggle drawing mode
+  };
+
+  // this is currently not used since all the circles are not aligned
+  handleDragMove = (e, i) => {
+    const { points } = this.state;
+    const newPoints = [...points];
+    newPoints[i].x = e.target.x();
+    newPoints[i].y = e.target.y();
+    this.setState({ points: newPoints });
+  };
+
   render() {
     const {
       classes,
@@ -57,6 +112,10 @@ class Main extends Component {
       circleOnePoints,
       circleTwoPoints,
       isMouseInside,
+      circleOneShape,
+      circleTwoShape,
+      isDrawingMode,
+      isDrawing,
     } = this.state;
 
     const scale = Math.min(
@@ -89,6 +148,17 @@ class Main extends Component {
         }
 
         <div className="main-container">
+          <FormControlLabel
+            control={(
+              <Checkbox
+                checked={isDrawingMode}
+                onChange={this.handleDrawingMode}
+                value="checkDrawer"
+                style={{ color: themeColor }}
+              />
+            )}
+            label="Drawing Mode"
+          />
           <Stage
             width={window.innerWidth}
             height={window.innerHeight}
@@ -120,7 +190,39 @@ class Main extends Component {
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
+                isDrawing={isDrawing}
+                handleClick={e => this.handleClick(e, 'circleOne')}
               />
+              {circleOneShape.map(shape => (
+                <Line
+                  points={
+                    [
+                      shape.x,
+                      shape.y,
+                      shape.width,
+                      shape.height,
+                    ]
+                  }
+                  stroke={themeColor}
+                  strokeWidth={strokeWidth}
+                />
+              ))
+              }
+              {circleTwoShape.map(shape => (
+                <Line
+                  points={
+                    [
+                      shape.x,
+                      shape.y,
+                      shape.width,
+                      shape.height,
+                    ]
+                  }
+                  stroke={themeColor}
+                  strokeWidth={strokeWidth}
+                />
+              ))
+              }
               <CircleTwo
                 circleTwoPoints={circleTwoPoints}
                 stroke={isMouseInside ? themeColor : circleStroke}
@@ -129,6 +231,7 @@ class Main extends Component {
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
+                handleClick={e => this.handleClick(e, 'circleTwo')}
               />
             </Layer>
           </Stage>
