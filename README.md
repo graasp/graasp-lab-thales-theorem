@@ -1,17 +1,17 @@
-# Graasp Lab Default Theme
+# Graasp Lab Cleanliness Of Thales
 
-This is the default theme for all Labs repository. Initially configured with Redux, language and theme settings with the controls panel.
+This Lab aims to bring learners, from geometric figures, to write the ratios of the distances according to the property of Thales.
 
 This Lab was created using [Graasp App Starter React](https://github.com/react-epfl/graasp-app-starter-react)
 
-![image](https://github.com/graasp/graasp-lab-starter-react/blob/master/public/preview.png)
+![image](https://github.com/graasp/graasp-lab-straights-and-segments/blob/master/public/preview.png)
 
 ## Quick Start
 
 1- Clone this repository by downloading directly or running this command:
 
 ```
-git clone git@github.com:graasp/graasp-lab-default-theme.git
+git clone git@github.com:graasp/graasp-lab-straights-and-segments.git
 ```
 
 2- Install dependencies by running `yarn` or `npm install` from the project directory to install all dependencies. In case your don't have them installed, go
@@ -22,8 +22,8 @@ git clone git@github.com:graasp/graasp-lab-default-theme.git
 ## Get involved
 
 Contact us at our Graasp React Group [here](http://graasp.eu/)
-Help us improve by creating [new issues](https://github.com/graasp/graasp-lab-default-theme/issues/new.
+Help us improve by creating [new issues](https://github.com/graasp/graasp-lab-straights-and-segments/issues/new.
 
 ## Licence
 
-See the [Licence](https://github.com/graasp/graasp-lab-default-theme/blob/1/main-view/LICENSE)
+See the [Licence](https://github.com/graasp/graasp-lab-straights-and-segments/blob/1/main-view/LICENSE)
