@@ -1,11 +1,12 @@
+.description-definition {
+  padding: .5rem 1rem 2rem;
+}
 .resume-container {
   margin-top: 1rem;
 }
-.resume-container p {
-  color: #555;
-  font-size: 1.1rem;
-  padding: 0 1rem;
-  margin-bottom: 2rem;
+.text-center p {
+  padding: 0 .5rem;
+  margin: .3rem 0;
 }
 .resume-container h1 {
   color: #555;
@@ -21,13 +22,17 @@
 }
 .formula-up, .formula-down {
    font-size: 1.6rem;
+   background: #5c9287;
+   padding: .5rem;
  }
  .formula-divider {
-   margin-bottom: .1rem !important;
+   color: #000;
  }
 .ab-side, .ac-side, .bc-side {
-  width: 26%;
   display: inline-block;
+    margin: 0 1rem;
+    color: #fff;
+    padding: 1rem 0;
 }
 .formula-equal {
   float: right;

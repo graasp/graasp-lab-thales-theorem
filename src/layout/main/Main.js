@@ -74,14 +74,15 @@ class Main extends Component {
 
     const newX = circleShape === 'circleOne' ? circleOnePoints.x : circleTwoPoints.x;
     const newY = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
+    const newHeight = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
     shapes.push({
       x: newX,
       y: newY,
       width: points[0].x,
-      height: circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y,
+      height: newHeight,
     });
-    if (circleShape === 'circleOne') this.setState({ circleOneShape: shapes });
-    if (circleShape === 'circleTwo') this.setState({ circleTwoShape: shapes });
+    // if (circleShape === 'circleOne') this.setState({ circleOneShape: shapes });
+    // if (circleShape === 'circleTwo') this.setState({ circleTwoShape: shapes });
   };
 
   handleDrawingMode = () => {
