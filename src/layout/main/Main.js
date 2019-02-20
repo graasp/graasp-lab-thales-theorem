@@ -162,8 +162,8 @@ class Main extends Component {
           <Stage
             width={window.innerWidth}
             height={window.innerHeight}
-            scalex={scale}
-            scaley={scale}
+            scaleX={scale}
+            scaleY={scale}
           >
             <Triangle
               circleStroke={circleStroke}
