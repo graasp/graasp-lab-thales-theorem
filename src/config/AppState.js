@@ -2,6 +2,8 @@ export const AppState = {
   isMouseInside: false,
   showTitle: true,
   openModal: false,
+  circleOneShape: [],
+  circleTwoShape: [],
   node: {
     A: 'A',
     B: 'B',
@@ -18,6 +20,8 @@ export const AppState = {
   bottomLine: [300, 450, 700, 450],
   circleOnePoints: { x: 290, y: 250 },
   circleTwoPoints: { x: 522, y: 450 },
+  isDrawing: false, // in the process of drawing a shape
+  isDrawingMode: false, // allow shapes to be drawn
 };
 
 export default AppState;
