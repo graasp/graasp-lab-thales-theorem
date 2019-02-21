@@ -22,6 +22,7 @@ export const AppState = {
   circleTwoPoints: { x: 557, y: 400 },
   isDrawing: false, // in the process of drawing a shape
   isDrawingMode: false, // allow shapes to be drawn
+  circleKind: null,
 };
 
 export default AppState;
