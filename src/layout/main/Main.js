@@ -11,7 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { Layer, Line, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
-import { toggleSideMenu } from '../../actions';
+import { toggleSideMenu, toggleNode } from '../../actions';
 import Triangle from '../../components/triangle/Triangle';
 import CircleOne from '../../components/circles/CircleOne';
 import CircleTwo from '../../components/circles/CircleTwo';
@@ -56,15 +56,35 @@ class Main extends Component {
     } = this.state;
     if (!isDrawingMode) return;
 
+    this.setState({ circleKind: circleShape });
+
     let shapes;
     // otherwise, add a new rectangle at the mouse position with 0 width and height,
     if (circleShape === 'circleOne') {
+      const { dispatchNode } = this.props;
+      const node = {
+        A: 'A',
+        B: 'B',
+        C: 'C',
+        D: 'D',
+        E: 'E',
+      };
+      dispatchNode(node, false);
       shapes = circleOneShape;
       if (shapes.length <= 1) {
         shapes = [];
         this.setState({ circleOneShape: shapes });
       }
     } else {
+      const { dispatchNode } = this.props;
+      const node = {
+        A: 'A',
+        B: 'B',
+        C: 'C',
+        D: 'F',
+        E: 'G',
+      };
+      dispatchNode(node, true);
       shapes = circleTwoShape;
       if (shapes.length <= 1) {
         shapes = [];
@@ -117,12 +137,15 @@ class Main extends Component {
       circleTwoShape,
       isDrawingMode,
       isDrawing,
+      circleKind,
     } = this.state;
 
     const scale = Math.min(
       window.innerWidth / CANVAS_VIRTUAL_WIDTH,
       window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
     );
+
+    const circleToDraw = circleKind === 'circleOne' ? circleOneShape : circleTwoShape;
 
     return (
       <main
@@ -194,22 +217,7 @@ class Main extends Component {
                 isDrawing={isDrawing}
                 handleClick={e => this.handleClick(e, 'circleOne')}
               />
-              {circleOneShape.map(shape => (
-                <Line
-                  points={
-                    [
-                      shape.x,
-                      shape.y,
-                      shape.width,
-                      shape.height,
-                    ]
-                  }
-                  stroke={themeColor}
-                  strokeWidth={strokeWidth}
-                />
-              ))
-              }
-              {circleTwoShape.map(shape => (
+              {circleToDraw.map(shape => (
                 <Line
                   points={
                     [
@@ -247,6 +255,7 @@ Main.propTypes = {
   themeColor: PropTypes.string.isRequired,
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
+  dispatchNode: PropTypes.func.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
 };
 
@@ -254,10 +263,13 @@ const mapStateToProps = state => ({
   themeColor: state.layout.themeColor,
   showHeader: state.layout.showHeader,
   showSideMenu: state.layout.showSideMenu,
+  node: state.simulation.node,
+  nodeStatus: state.simulation.nodeStatus,
 });
 
 const mapDispatchToProps = {
   dispatchToggleSideMenu: toggleSideMenu,
+  dispatchNode: toggleNode,
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Main);
