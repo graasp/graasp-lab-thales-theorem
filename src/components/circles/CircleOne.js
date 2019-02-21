@@ -116,5 +116,4 @@ CircleOne.propTypes = {
   nodeStatus: PropTypes.bool.isRequired,
 };
 
-
 export default CircleOne;
