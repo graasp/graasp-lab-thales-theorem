@@ -24,6 +24,7 @@ const Resume = ({
           {node.D}
         </b>
       </div>
+      <span className="equalizer">=</span>
       <div className="ac-side">
         <b className="formula-up" style={{ backgroundColor: themeColor }}>
           {node.A}
@@ -35,6 +36,7 @@ const Resume = ({
           {node.E}
         </b>
       </div>
+      <span className="equalizer">=</span>
       <div className="bc-side">
         <b className="formula-up" style={{ backgroundColor: themeColor }}>
           {node.B}
