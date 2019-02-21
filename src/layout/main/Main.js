@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -8,7 +8,12 @@ import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Layer, Line, Stage } from 'react-konva';
+import {
+  Layer,
+  Line,
+  Stage,
+  Text,
+} from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
 import { toggleSideMenu, toggleNode } from '../../actions';
@@ -23,6 +28,7 @@ import {
   shadowBlur,
   fontSize,
   radius,
+  textSize,
 } from '../../config/properties';
 
 const styles = Styles;
@@ -125,6 +131,7 @@ class Main extends Component {
       showHeader,
       showSideMenu,
       themeColor,
+      nodeStatus,
     } = this.props;
 
     const {
@@ -146,6 +153,8 @@ class Main extends Component {
     );
 
     const circleToDraw = circleKind === 'circleOne' ? circleOneShape : circleTwoShape;
+    const currentLineSize = circleKind === 'circleOne' ? '8cm' : '13cm';
+    const currentDistance = circleKind === 'circleOne' ? 160 : 260;
 
     return (
       <main
@@ -195,6 +204,7 @@ class Main extends Component {
               color={color}
               node={node}
               fontSize={fontSize}
+              textSize={textSize}
               radius={radius}
               shadowBlur={shadowBlur}
               points={
@@ -216,20 +226,30 @@ class Main extends Component {
                 handleMouseEnter={this.handleMouseEnter}
                 isDrawing={isDrawing}
                 handleClick={e => this.handleClick(e, 'circleOne')}
+                nodeStatus={nodeStatus}
               />
               {circleToDraw.map(shape => (
-                <Line
-                  points={
-                    [
-                      shape.x,
-                      shape.y,
-                      shape.width,
-                      shape.height,
-                    ]
-                  }
-                  stroke={themeColor}
-                  strokeWidth={strokeWidth}
-                />
+                <Fragment>
+                  <Line
+                    points={
+                      [
+                        shape.x,
+                        shape.y,
+                        shape.width,
+                        shape.height,
+                      ]
+                    }
+                    stroke={themeColor}
+                    strokeWidth={strokeWidth}
+                  />
+                  <Text
+                    x={shape.x - currentDistance}
+                    y={shape.y - 30}
+                    text={currentLineSize}
+                    fontSize={textSize}
+                    fill={color}
+                  />
+                </Fragment>
               ))
               }
               <CircleTwo
@@ -241,6 +261,7 @@ class Main extends Component {
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
                 handleClick={e => this.handleClick(e, 'circleTwo')}
+                nodeStatus={nodeStatus}
               />
             </Layer>
           </Stage>
@@ -257,6 +278,7 @@ Main.propTypes = {
   showSideMenu: PropTypes.bool.isRequired,
   dispatchNode: PropTypes.func.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
+  nodeStatus: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
