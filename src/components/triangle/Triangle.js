@@ -16,6 +16,7 @@ const Triangle = ({
   radius,
   strokeWidth,
   shadowBlur,
+  textSize,
 }) => (
   <Layer>
     <Shape
@@ -70,6 +71,13 @@ const Triangle = ({
       fill={color}
     />
     <Text
+      x={points[1].x + 240}
+      y={points[1].y - 30}
+      text="14cm"
+      fontSize={textSize}
+      fill={color}
+    />
+    <Text
       x={points[2].x + 20}
       y={points[2].y + 20}
       text={node.C}
@@ -95,6 +103,7 @@ Triangle.propTypes = {
   strokeWidth: PropTypes.number.isRequired,
   fontSize: PropTypes.number.isRequired,
   circleStroke: PropTypes.string.isRequired,
+  textSize: PropTypes.number.isRequired,
 };
 
 export default Triangle;
