@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const Resume = ({
@@ -58,4 +59,9 @@ Resume.propTypes = {
   t: PropTypes.func.isRequired,
   node: PropTypes.shape({}).isRequired,
 };
-export default Resume;
+
+const mapStateToProps = state => ({
+  node: state.simulation.node,
+});
+
+export default connect(mapStateToProps)(Resume);
