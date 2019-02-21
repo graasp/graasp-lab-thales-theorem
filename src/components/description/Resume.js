@@ -18,9 +18,7 @@ const Resume = ({
           {node.A}
           {node.B}
         </b>
-        <p className="formula-divider">
-          ───
-        </p>
+        <p className="formula-divider">───</p>
         <b className="formula-down" style={{ backgroundColor: themeColor }}>
           {node.A}
           {node.D}
@@ -31,9 +29,7 @@ const Resume = ({
           {node.A}
           {node.C}
         </b>
-        <p className="formula-divider">
-          ───
-        </p>
+        <p className="formula-divider">───</p>
         <b className="formula-down" style={{ backgroundColor: themeColor }}>
           {node.A}
           {node.E}
@@ -44,9 +40,7 @@ const Resume = ({
           {node.B}
           {node.C}
         </b>
-        <p className="formula-divider">
-          ───
-        </p>
+        <p className="formula-divider">───</p>
         <b className="formula-down" style={{ backgroundColor: themeColor }}>
           {node.D}
           {node.E}
