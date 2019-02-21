@@ -32,6 +32,7 @@ const CircleOne = ({
         fill={themeColor}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       />
       <Circle
         x={points[0].x}
@@ -43,7 +44,6 @@ const CircleOne = ({
         fill={themeColor}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
       />
       <Text
         x={points[0].x - 40}
