@@ -41,16 +41,19 @@ class Main extends Component {
     dispatchToggleSideMenu(open);
   }
 
+  // called when the mous hovers any circle
   handleMouseEnter = () => {
     document.body.style.cursor = 'pointer';
     this.setState({ isMouseInside: true });
   }
 
+  // called when the mous leaves any circle
   handleMouseLeave = () => {
     document.body.style.cursor = 'default';
     this.setState({ isMouseInside: false });
   }
 
+  // called when any circle is clicked to draw the line
   handleClick = (e, circleShape) => {
     const {
       isDrawingMode,
@@ -65,7 +68,8 @@ class Main extends Component {
     this.setState({ circleKind: circleShape });
 
     let shapes;
-    // otherwise, add a new rectangle at the mouse position with 0 width and height,
+    // update formula variables based on the clicked circle
+    // and dispatching it to our reducers state
     if (circleShape === 'circleOne') {
       const { dispatchNode } = this.props;
       const node = {
@@ -97,7 +101,7 @@ class Main extends Component {
         this.setState({ circleTwoShape: shapes });
       }
     }
-
+    // updating new corrdinates based on the right circle
     const newX = circleShape === 'circleOne' ? circleOnePoints.x : circleTwoPoints.x;
     const newY = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
     const newHeight = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
@@ -107,10 +111,9 @@ class Main extends Component {
       width: points[0].x,
       height: newHeight,
     });
-    // if (circleShape === 'circleOne') this.setState({ circleOneShape: shapes });
-    // if (circleShape === 'circleTwo') this.setState({ circleTwoShape: shapes });
   };
 
+  // called when drag mode is enabled from the check box
   handleDrawingMode = () => {
     const { isDrawingMode } = this.state;
     this.setState({ isDrawingMode: !isDrawingMode }); // toggle drawing mode
@@ -192,6 +195,8 @@ class Main extends Component {
             )}
             label="Drawing Mode"
           />
+          {/* using react konva stage and needed tags for all the simulations */}
+          {/* circleOne and circleTwo are the node that can be cliked to draw lines */}
           <Stage
             width={window.innerWidth}
             height={window.innerHeight}
