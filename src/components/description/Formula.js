@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const Resume = ({
+const Formula = ({
   node,
   t,
   themeColor,
@@ -52,7 +52,7 @@ const Resume = ({
   </div>
 );
 
-Resume.propTypes = {
+Formula.propTypes = {
   t: PropTypes.func.isRequired,
   themeColor: PropTypes.string.isRequired,
   node: PropTypes.shape({}).isRequired,
@@ -63,4 +63,4 @@ const mapStateToProps = state => ({
   themeColor: state.layout.themeColor,
 });
 
-export default connect(mapStateToProps)(Resume);
+export default connect(mapStateToProps)(Formula);
