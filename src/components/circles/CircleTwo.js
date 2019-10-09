@@ -1,14 +1,13 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { Circle, Text } from 'react-konva';
 import {
-  Group,
-  Circle,
-  Text,
-} from 'react-konva';
-import {
+  color,
   strokeWidth,
   shadowBlur,
   fontSize,
+  textSize,
+  smallSize,
 } from '../../config/properties';
 
 const CircleTwo = ({
@@ -19,13 +18,19 @@ const CircleTwo = ({
   handleMouseEnter,
   handleMouseLeave,
   handleClick,
-}) => (
-  <Fragment>
-    <Group>
+  nodeStatus,
+}) => {
+  const currentLeftSize = nodeStatus ? '3cm' : '7cm';
+  const currentRightSize = nodeStatus ? '4cm' : '9cm';
+  const activeSize = (nodeStatus !== false) ? fontSize : smallSize;
+  const activeRadius = (nodeStatus !== false) ? 10 : 5;
+
+  return (
+    <Fragment>
       <Circle
         x={circleTwoPoints.x}
         y={circleTwoPoints.y}
-        radius={10}
+        radius={activeRadius}
         stroke={stroke}
         strokeWidth={strokeWidth}
         shadowBlur={shadowBlur}
@@ -37,7 +42,7 @@ const CircleTwo = ({
       <Circle
         x={points[0].x}
         y={circleTwoPoints.y}
-        radius={10}
+        radius={activeRadius}
         stroke={stroke}
         strokeWidth={strokeWidth}
         shadowBlur={shadowBlur}
@@ -49,19 +54,33 @@ const CircleTwo = ({
         x={points[0].x - 40}
         y={circleTwoPoints.y - 10}
         text="F"
-        fontSize={fontSize}
+        fontSize={activeSize}
         fill={themeColor}
+      />
+      <Text
+        x={points[0].x - 50}
+        y={circleTwoPoints.y + 40}
+        text={currentLeftSize}
+        fontSize={textSize}
+        fill={color}
       />
       <Text
         x={circleTwoPoints.x + 20}
         y={circleTwoPoints.y - 10}
         text="G"
-        fontSize={fontSize}
+        fontSize={activeSize}
         fill={themeColor}
       />
-    </Group>
-  </Fragment>
-);
+      <Text
+        x={circleTwoPoints.x + 70}
+        y={circleTwoPoints.y + 30}
+        text={currentRightSize}
+        fontSize={textSize}
+        fill={color}
+      />
+    </Fragment>
+  );
+};
 
 CircleTwo.propTypes = {
   node: PropTypes.shape({
@@ -79,6 +98,7 @@ CircleTwo.propTypes = {
   handleMouseEnter: PropTypes.func.isRequired,
   handleMouseLeave: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
+  nodeStatus: PropTypes.bool.isRequired,
 };
 
 export default CircleTwo;

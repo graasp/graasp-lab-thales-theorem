@@ -1,11 +1,10 @@
 {
-  "name": "graasp-app-starter-react",
+  "name": "graasp-cleanliness-of-thales",
   "version": "0.1.0",
   "private": true,
   "author": "React EPFL",
   "contributors": [
     "Juan Carlos Farah",
-    "Hassan Abdul Ghaffar",
     "Mashkour Abdel Aziz"
   ],
   "homepage": ".",

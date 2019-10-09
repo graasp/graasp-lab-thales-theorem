@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -8,7 +8,12 @@ import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Layer, Line, Stage } from 'react-konva';
+import {
+  Layer,
+  Line,
+  Stage,
+  Text,
+} from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
 import { toggleSideMenu, toggleNode } from '../../actions';
@@ -23,6 +28,7 @@ import {
   shadowBlur,
   fontSize,
   radius,
+  textSize,
 } from '../../config/properties';
 
 const styles = Styles;
@@ -35,16 +41,19 @@ class Main extends Component {
     dispatchToggleSideMenu(open);
   }
 
+  // called when the mous hovers any circle
   handleMouseEnter = () => {
     document.body.style.cursor = 'pointer';
     this.setState({ isMouseInside: true });
   }
 
+  // called when the mous leaves any circle
   handleMouseLeave = () => {
     document.body.style.cursor = 'default';
     this.setState({ isMouseInside: false });
   }
 
+  // called when any circle is clicked to draw the line
   handleClick = (e, circleShape) => {
     const {
       isDrawingMode,
@@ -59,7 +68,8 @@ class Main extends Component {
     this.setState({ circleKind: circleShape });
 
     let shapes;
-    // otherwise, add a new rectangle at the mouse position with 0 width and height,
+    // update formula variables based on the clicked circle
+    // and dispatching it to our reducers state
     if (circleShape === 'circleOne') {
       const { dispatchNode } = this.props;
       const node = {
@@ -91,7 +101,7 @@ class Main extends Component {
         this.setState({ circleTwoShape: shapes });
       }
     }
-
+    // updating new corrdinates based on the right circle
     const newX = circleShape === 'circleOne' ? circleOnePoints.x : circleTwoPoints.x;
     const newY = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
     const newHeight = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
@@ -101,10 +111,9 @@ class Main extends Component {
       width: points[0].x,
       height: newHeight,
     });
-    // if (circleShape === 'circleOne') this.setState({ circleOneShape: shapes });
-    // if (circleShape === 'circleTwo') this.setState({ circleTwoShape: shapes });
   };
 
+  // called when drag mode is enabled from the check box
   handleDrawingMode = () => {
     const { isDrawingMode } = this.state;
     this.setState({ isDrawingMode: !isDrawingMode }); // toggle drawing mode
@@ -125,6 +134,7 @@ class Main extends Component {
       showHeader,
       showSideMenu,
       themeColor,
+      nodeStatus,
     } = this.props;
 
     const {
@@ -146,6 +156,8 @@ class Main extends Component {
     );
 
     const circleToDraw = circleKind === 'circleOne' ? circleOneShape : circleTwoShape;
+    const currentLineSize = circleKind === 'circleOne' ? '8cm' : '13cm';
+    const currentDistance = circleKind === 'circleOne' ? 160 : 260;
 
     return (
       <main
@@ -183,6 +195,8 @@ class Main extends Component {
             )}
             label="Drawing Mode"
           />
+          {/* using react konva stage and needed tags for all the simulations */}
+          {/* circleOne and circleTwo are the node that can be cliked to draw lines */}
           <Stage
             width={window.innerWidth}
             height={window.innerHeight}
@@ -195,6 +209,7 @@ class Main extends Component {
               color={color}
               node={node}
               fontSize={fontSize}
+              textSize={textSize}
               radius={radius}
               shadowBlur={shadowBlur}
               points={
@@ -216,20 +231,30 @@ class Main extends Component {
                 handleMouseEnter={this.handleMouseEnter}
                 isDrawing={isDrawing}
                 handleClick={e => this.handleClick(e, 'circleOne')}
+                nodeStatus={nodeStatus}
               />
               {circleToDraw.map(shape => (
-                <Line
-                  points={
-                    [
-                      shape.x,
-                      shape.y,
-                      shape.width,
-                      shape.height,
-                    ]
-                  }
-                  stroke={themeColor}
-                  strokeWidth={strokeWidth}
-                />
+                <Fragment>
+                  <Line
+                    points={
+                      [
+                        shape.x,
+                        shape.y,
+                        shape.width,
+                        shape.height,
+                      ]
+                    }
+                    stroke={themeColor}
+                    strokeWidth={strokeWidth}
+                  />
+                  <Text
+                    x={shape.x - currentDistance}
+                    y={shape.y - 30}
+                    text={currentLineSize}
+                    fontSize={textSize}
+                    fill={color}
+                  />
+                </Fragment>
               ))
               }
               <CircleTwo
@@ -241,6 +266,7 @@ class Main extends Component {
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
                 handleClick={e => this.handleClick(e, 'circleTwo')}
+                nodeStatus={nodeStatus}
               />
             </Layer>
           </Stage>
@@ -257,6 +283,7 @@ Main.propTypes = {
   showSideMenu: PropTypes.bool.isRequired,
   dispatchNode: PropTypes.func.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
+  nodeStatus: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({

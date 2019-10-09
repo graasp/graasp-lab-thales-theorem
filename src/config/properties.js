@@ -6,3 +6,5 @@ export const lineStroke = '#D91111';
 export const radius = 7;
 export const strokeWidth = 2;
 export const shadowBlur = 5;
+export const textSize = 20;
+export const smallSize = 10;
