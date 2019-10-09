@@ -1,13 +1,11 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Line,
   Group,
   Circle,
   Text,
 } from 'react-konva';
 import {
-  lineStrokeWidth,
   strokeWidth,
   shadowBlur,
   fontSize,
@@ -20,6 +18,7 @@ const CircleOne = ({
   themeColor,
   handleMouseEnter,
   handleMouseLeave,
+  handleClick,
 }) => (
   <Fragment>
     <Group>
@@ -33,6 +32,7 @@ const CircleOne = ({
         fill={themeColor}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
       />
       <Circle
         x={points[0].x}
@@ -44,18 +44,6 @@ const CircleOne = ({
         fill={themeColor}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-      />
-      <Line
-        points={
-          [
-            points[0].x,
-            circleOnePoints.y,
-            circleOnePoints.x,
-            circleOnePoints.y,
-          ]
-        }
-        stroke={themeColor}
-        strokeWidth={lineStrokeWidth}
       />
       <Text
         x={points[0].x - 40}
@@ -90,6 +78,7 @@ CircleOne.propTypes = {
   circleOnePoints: PropTypes.shape({}).isRequired,
   handleMouseEnter: PropTypes.func.isRequired,
   handleMouseLeave: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 export default CircleOne;

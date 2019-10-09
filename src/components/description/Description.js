@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import Resume from './Resume';
 import './Description.css';
 
-const Description = ({ node, t }) => (
+const Description = ({ t }) => (
   <div className="description-container">
-    <Resume t={t} node={node} />
+    <Resume t={t} />
   </div>
 );
 

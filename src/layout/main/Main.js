@@ -6,11 +6,13 @@ import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { Layer, Stage } from 'react-konva';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import { Layer, Line, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import { AppState } from '../../config/AppState';
-import { toggleSideMenu } from '../../actions';
-import Triangle from '../../components/Triangle';
+import { toggleSideMenu, toggleNode } from '../../actions';
+import Triangle from '../../components/triangle/Triangle';
 import CircleOne from '../../components/circles/CircleOne';
 import CircleTwo from '../../components/circles/CircleTwo';
 import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
@@ -43,6 +45,80 @@ class Main extends Component {
     this.setState({ isMouseInside: false });
   }
 
+  handleClick = (e, circleShape) => {
+    const {
+      isDrawingMode,
+      circleOneShape,
+      circleTwoShape,
+      circleOnePoints,
+      circleTwoPoints,
+      points,
+    } = this.state;
+    if (!isDrawingMode) return;
+
+    this.setState({ circleKind: circleShape });
+
+    let shapes;
+    // otherwise, add a new rectangle at the mouse position with 0 width and height,
+    if (circleShape === 'circleOne') {
+      const { dispatchNode } = this.props;
+      const node = {
+        A: 'A',
+        B: 'B',
+        C: 'C',
+        D: 'D',
+        E: 'E',
+      };
+      dispatchNode(node, false);
+      shapes = circleOneShape;
+      if (shapes.length <= 1) {
+        shapes = [];
+        this.setState({ circleOneShape: shapes });
+      }
+    } else {
+      const { dispatchNode } = this.props;
+      const node = {
+        A: 'A',
+        B: 'B',
+        C: 'C',
+        D: 'F',
+        E: 'G',
+      };
+      dispatchNode(node, true);
+      shapes = circleTwoShape;
+      if (shapes.length <= 1) {
+        shapes = [];
+        this.setState({ circleTwoShape: shapes });
+      }
+    }
+
+    const newX = circleShape === 'circleOne' ? circleOnePoints.x : circleTwoPoints.x;
+    const newY = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
+    const newHeight = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
+    shapes.push({
+      x: newX,
+      y: newY,
+      width: points[0].x,
+      height: newHeight,
+    });
+    // if (circleShape === 'circleOne') this.setState({ circleOneShape: shapes });
+    // if (circleShape === 'circleTwo') this.setState({ circleTwoShape: shapes });
+  };
+
+  handleDrawingMode = () => {
+    const { isDrawingMode } = this.state;
+    this.setState({ isDrawingMode: !isDrawingMode }); // toggle drawing mode
+  };
+
+  // this is currently not used since all the circles are not aligned
+  handleDragMove = (e, i) => {
+    const { points } = this.state;
+    const newPoints = [...points];
+    newPoints[i].x = e.target.x();
+    newPoints[i].y = e.target.y();
+    this.setState({ points: newPoints });
+  };
+
   render() {
     const {
       classes,
@@ -57,12 +133,19 @@ class Main extends Component {
       circleOnePoints,
       circleTwoPoints,
       isMouseInside,
+      circleOneShape,
+      circleTwoShape,
+      isDrawingMode,
+      isDrawing,
+      circleKind,
     } = this.state;
 
     const scale = Math.min(
       window.innerWidth / CANVAS_VIRTUAL_WIDTH,
       window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
     );
+
+    const circleToDraw = circleKind === 'circleOne' ? circleOneShape : circleTwoShape;
 
     return (
       <main
@@ -89,11 +172,22 @@ class Main extends Component {
         }
 
         <div className="main-container">
+          <FormControlLabel
+            control={(
+              <Checkbox
+                checked={isDrawingMode}
+                onChange={this.handleDrawingMode}
+                value="checkDrawer"
+                style={{ color: themeColor }}
+              />
+            )}
+            label="Drawing Mode"
+          />
           <Stage
             width={window.innerWidth}
             height={window.innerHeight}
-            scalex={scale}
-            scaley={scale}
+            scaleX={scale}
+            scaleY={scale}
           >
             <Triangle
               circleStroke={circleStroke}
@@ -120,7 +214,24 @@ class Main extends Component {
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
+                isDrawing={isDrawing}
+                handleClick={e => this.handleClick(e, 'circleOne')}
               />
+              {circleToDraw.map(shape => (
+                <Line
+                  points={
+                    [
+                      shape.x,
+                      shape.y,
+                      shape.width,
+                      shape.height,
+                    ]
+                  }
+                  stroke={themeColor}
+                  strokeWidth={strokeWidth}
+                />
+              ))
+              }
               <CircleTwo
                 circleTwoPoints={circleTwoPoints}
                 stroke={isMouseInside ? themeColor : circleStroke}
@@ -129,6 +240,7 @@ class Main extends Component {
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
+                handleClick={e => this.handleClick(e, 'circleTwo')}
               />
             </Layer>
           </Stage>
@@ -143,6 +255,7 @@ Main.propTypes = {
   themeColor: PropTypes.string.isRequired,
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
+  dispatchNode: PropTypes.func.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
 };
 
@@ -150,10 +263,13 @@ const mapStateToProps = state => ({
   themeColor: state.layout.themeColor,
   showHeader: state.layout.showHeader,
   showSideMenu: state.layout.showSideMenu,
+  node: state.simulation.node,
+  nodeStatus: state.simulation.nodeStatus,
 });
 
 const mapDispatchToProps = {
   dispatchToggleSideMenu: toggleSideMenu,
+  dispatchNode: toggleNode,
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Main);

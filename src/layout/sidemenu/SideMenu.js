@@ -9,7 +9,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Description from '../../components/Description';
+import Description from '../../components/description/Description';
 import Styles from './Styles';
 import { toggleSideMenu } from '../../actions';
 
@@ -59,6 +59,7 @@ class SideMenu extends Component {
 SideMenu.propTypes = {
   classes: PropTypes.shape({}).isRequired,
   theme: PropTypes.shape({}).isRequired,
+  node: PropTypes.shape({}).isRequired,
   t: PropTypes.func.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
   showSideMenu: PropTypes.bool.isRequired,

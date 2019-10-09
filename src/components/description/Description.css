@@ -1,0 +1,67 @@
+.description-definition {
+  padding: .5rem 1rem 2rem;
+}
+.resume-container {
+  margin-top: 1rem;
+}
+.text-center p {
+  padding: 0 .5rem;
+  margin: .3rem 0;
+}
+.resume-container h1 {
+  color: #555;
+  margin: 1rem 0;
+  padding-left: 1rem;
+  font-size: 1.3rem;
+}
+.title-switch {
+  padding-top: 1rem;
+}
+.formula-up, .formula-down {
+   background: rgb(0, 150, 136);
+   border-radius: 0.4rem;
+   box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2), 0px 4px 5px 0px rgba(0,0,0,0.14), 0px 1px 10px 0px rgba(0,0,0,0.12);
+   font-size: 1.6rem;
+   padding: .5rem;
+ }
+ .formula-divider {
+   color: #000;
+ }
+.ab-side, .ac-side, .bc-side {
+  color: #fff;
+  display: inline-block;
+  margin: 0 1rem;
+  padding: 1rem 0;
+}
+.formula-equal {
+  float: right;
+}
+.mesure-title {
+  padding-top: 3rem;
+}
+.mesure-divider {
+  margin-bottom: -.8rem !important;
+}
+.mesure-side {
+  margin-bottom: 1.5rem;
+}
+.mesure-down {
+  margin-left: 1rem;
+}
+.mesure-up {
+  margin-left: -.7rem;
+}
+.formula-up:hover, .formula-down:hover {
+  background: #fff;
+  color: #555!important;
+  cursor: pointer;
+  transform: scale(2);
+  -webkit-transform: scale(-2);
+  transition: all 300ms;
+}
+.equalizer {
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 2.8rem;
+  font-size: 2rem;
+}
