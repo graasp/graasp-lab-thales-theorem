@@ -1,4 +1,4 @@
-# Graasp Lab Cleanliness Of Thales
+# Graasp Lab: Thales' Theorem
 
 This Lab aims to bring learners, from geometric figures, to write the ratios of the distances according to the property of Thales.
 
@@ -26,4 +26,4 @@ Help us improve by creating [new issues](https://github.com/graasp/graasp-lab-st
 
 ## Licence
 
-See the [Licence](https://github.com/graasp/graasp-lab-straights-and-segments/blob/1/main-view/LICENSE)
+See the [Licence](https://github.com/graasp/graasp-lab-straights-and-segments/blob/master/LICENSE)
