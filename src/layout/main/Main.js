@@ -63,7 +63,7 @@ class Main extends Component {
 
   // called when any circle is clicked to draw the line
   handleClick = (e) => {
-    const { firstClickedPoint, secondClickedPoint, secondClickedPointRef } = this.state;
+    const { firstClickedPoint } = this.state;
     const { applyTheorem, dontApplyTheorem } = this.props;
 
     const { x, y } = e.target.attrs;
@@ -78,16 +78,17 @@ class Main extends Component {
           secondClickedPointRef: e.target,
         },
         () => {
+          const { secondClickedPoint, secondClickedPointRef } = this.state;
           if (
             secondClickedPoint
             && secondClickedPoint.y === 0
+            && secondClickedPoint.x !== 0
           ) {
             /* const theoremApplicationCircle = secondClickedPointRef.attrs.y === 250 ?
             'circleOne' : secondClickedPointRef.attrs.y === 400 ? 'circleTwo' : null; */
             const thCondition = (condition, then, otherwise) => (condition ? then : otherwise);
-            const theoremApplicationCircle = thCondition(secondClickedPointRef.attrs.y === 250, 'circleOne', null)
-            || thCondition(secondClickedPointRef.attrs.y === 400, 'circleTwo', null);
-
+            const theoremApplicationCircle = (thCondition(secondClickedPointRef.attrs.y === 250, 'circleOne', null)
+            || thCondition(secondClickedPointRef.attrs.y === 400, 'circleTwo', null));
             applyTheorem(theoremApplicationCircle);
           } else {
             dontApplyTheorem();
