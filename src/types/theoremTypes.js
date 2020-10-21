@@ -1,0 +1,3 @@
+export const RESET = 'RESET';
+export const THEOREM_CAN_APPLY = 'THEOREM_CAN_APPLY';
+export const THEOREM_CANNOT_APPLY = 'THEOREM_CANNOT_APPLY';

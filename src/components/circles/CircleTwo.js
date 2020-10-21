@@ -22,8 +22,8 @@ const CircleTwo = ({
 }) => {
   const currentLeftSize = nodeStatus ? '3cm' : '7cm';
   const currentRightSize = nodeStatus ? '4cm' : '9cm';
-  const activeSize = (nodeStatus !== false) ? fontSize : smallSize;
-  const activeRadius = (nodeStatus !== false) ? 10 : 5;
+  const activeSize = nodeStatus !== false ? fontSize : smallSize;
+  const activeRadius = nodeStatus !== false ? 10 : 5;
 
   return (
     <Fragment>
@@ -47,6 +47,7 @@ const CircleTwo = ({
         strokeWidth={strokeWidth}
         shadowBlur={shadowBlur}
         fill={themeColor}
+        onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       />
@@ -88,10 +89,12 @@ CircleTwo.propTypes = {
     B: PropTypes.string.isRequired,
     C: PropTypes.string.isRequired,
   }).isRequired,
-  points: PropTypes.arrayOf(PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  })).isRequired,
+  points: PropTypes.arrayOf(
+    PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
   stroke: PropTypes.string.isRequired,
   themeColor: PropTypes.string.isRequired,
   circleTwoPoints: PropTypes.shape({}).isRequired,
