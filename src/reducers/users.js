@@ -15,7 +15,8 @@ export default (state = INITIAL_STATE, { payload, type }) => {
 
     case GET_USERS_FAILED:
       // show error to user
-      alert(payload);
+      // alert(payload);
+
       return state;
 
     default:

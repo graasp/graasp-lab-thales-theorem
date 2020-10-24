@@ -4,6 +4,8 @@ import appInstanceReducer from './appInstance';
 import contextReducer from './context';
 import userReducer from './users';
 import simulationReducer from './simulation';
+import theoremReducer from './theoremReducer';
+import fractionReducer from './fractionSpotReducer';
 
 export default combineReducers({
   layout: layoutReducer,
@@ -11,4 +13,6 @@ export default combineReducers({
   context: contextReducer,
   user: userReducer,
   simulation: simulationReducer,
+  theoremCanApply: theoremReducer,
+  fraction: fractionReducer,
 });

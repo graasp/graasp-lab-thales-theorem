@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Circle,
-  Layer,
-  Shape,
-  Text,
+  Circle, Layer, Shape, Text,
 } from 'react-konva';
 
 const Triangle = ({
@@ -94,10 +91,12 @@ Triangle.propTypes = {
     B: PropTypes.string.isRequired,
     C: PropTypes.string.isRequired,
   }).isRequired,
-  points: PropTypes.arrayOf(PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  })).isRequired,
+  points: PropTypes.arrayOf(
+    PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
   radius: PropTypes.number.isRequired,
   shadowBlur: PropTypes.number.isRequired,
   strokeWidth: PropTypes.number.isRequired,

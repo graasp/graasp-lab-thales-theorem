@@ -1,26 +1,33 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import {
-  Layer,
-  Line,
-  Stage,
-  Text,
-} from 'react-konva';
+import { Layer, Line, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
+import './Main.css';
 import { AppState } from '../../config/AppState';
-import { toggleSideMenu, toggleNode } from '../../actions';
+import {
+  reset as resetLab,
+  resetFractionSpot as resetLabFractionSpot,
+  toggleSideMenu,
+  toggleNode,
+  applyTheorem as theoremApply,
+  dontApplyTheorem as theoremDontApply,
+} from '../../actions';
 import Triangle from '../../components/triangle/Triangle';
 import CircleOne from '../../components/circles/CircleOne';
 import CircleTwo from '../../components/circles/CircleTwo';
-import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
+import CreateFormula from '../../components/formula';
+import {
+  CANVAS_VIRTUAL_WIDTH,
+  CANVAS_VIRTUAL_HEIGHT,
+} from '../../config/constants';
 import {
   color,
   circleStroke,
@@ -32,101 +39,92 @@ import {
 } from '../../config/properties';
 
 const styles = Styles;
+const initialState = {
+  firstClickedPointRef: null,
+  firstClickedPoint: null,
+  secondClickedPoint: null,
+  secondClickedPointRef: null,
+  mouseMoving: null,
+};
 
 class Main extends Component {
-  state = AppState;
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...AppState,
+      ...initialState,
+    };
+  }
 
   handleToggleSideMenu = open => () => {
     const { dispatchToggleSideMenu } = this.props;
     dispatchToggleSideMenu(open);
-  }
-
-  // called when the mous hovers any circle
-  handleMouseEnter = () => {
-    document.body.style.cursor = 'pointer';
-    this.setState({ isMouseInside: true });
-  }
-
-  // called when the mous leaves any circle
-  handleMouseLeave = () => {
-    document.body.style.cursor = 'default';
-    this.setState({ isMouseInside: false });
-  }
+  };
 
   // called when any circle is clicked to draw the line
-  handleClick = (e, circleShape) => {
-    const {
-      isDrawingMode,
-      circleOneShape,
-      circleTwoShape,
-      circleOnePoints,
-      circleTwoPoints,
-      points,
-    } = this.state;
-    if (!isDrawingMode) return;
+  handleClick = (e) => {
+    const { firstClickedPoint } = this.state;
+    const { applyTheorem, dontApplyTheorem } = this.props;
 
-    this.setState({ circleKind: circleShape });
-
-    let shapes;
-    // update formula variables based on the clicked circle
-    // and dispatching it to our reducers state
-    if (circleShape === 'circleOne') {
-      const { dispatchNode } = this.props;
-      const node = {
-        A: 'A',
-        B: 'B',
-        C: 'C',
-        D: 'D',
-        E: 'E',
-      };
-      dispatchNode(node, false);
-      shapes = circleOneShape;
-      if (shapes.length <= 1) {
-        shapes = [];
-        this.setState({ circleOneShape: shapes });
-      }
+    const { x, y } = e.target.attrs;
+    if (firstClickedPoint) {
+      // One circle has already been clicked
+      this.setState(
+        {
+          secondClickedPoint: {
+            x: x - firstClickedPoint.x,
+            y: y - firstClickedPoint.y,
+          },
+          secondClickedPointRef: e.target,
+        },
+        () => {
+          const { secondClickedPoint, secondClickedPointRef } = this.state;
+          if (
+            secondClickedPoint
+            && secondClickedPoint.y === 0
+            && secondClickedPoint.x !== 0
+          ) {
+            /* const theoremApplicationCircle = secondClickedPointRef.attrs.y === 250 ?
+            'circleOne' : secondClickedPointRef.attrs.y === 400 ? 'circleTwo' : null; */
+            const thCondition = (condition, then, otherwise) => (condition ? then : otherwise);
+            const theoremApplicationCircle = (thCondition(secondClickedPointRef.attrs.y === 250, 'circleOne', null)
+            || thCondition(secondClickedPointRef.attrs.y === 400, 'circleTwo', null));
+            applyTheorem(theoremApplicationCircle);
+          } else {
+            dontApplyTheorem();
+          }
+        },
+      );
     } else {
-      const { dispatchNode } = this.props;
-      const node = {
-        A: 'A',
-        B: 'B',
-        C: 'C',
-        D: 'F',
-        E: 'G',
-      };
-      dispatchNode(node, true);
-      shapes = circleTwoShape;
-      if (shapes.length <= 1) {
-        shapes = [];
-        this.setState({ circleTwoShape: shapes });
-      }
+      // The circle has been clicked for the first time
+      this.setState({
+        firstClickedPointRef: e.target,
+        firstClickedPoint: { x, y },
+        mouseMoving: { x: 0, y: 0 },
+      });
     }
-    // updating new corrdinates based on the right circle
-    const newX = circleShape === 'circleOne' ? circleOnePoints.x : circleTwoPoints.x;
-    const newY = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
-    const newHeight = circleShape === 'circleOne' ? circleOnePoints.y : circleTwoPoints.y;
-    shapes.push({
-      x: newX,
-      y: newY,
-      width: points[0].x,
-      height: newHeight,
+  };
+
+  // Method to execute when mouse is moving on the canvas
+  handleStageMove = (e) => {
+    const { firstClickedPointRef } = this.state;
+
+    const node = firstClickedPointRef || e.target;
+    const transform = node.getAbsoluteTransform().copy();
+    transform.invert();
+    const pos = node.getStage().getPointerPosition();
+    const { x, y } = transform.point(pos);
+    this.setState({ mouseMoving: { x, y } });
+  };
+
+  // Lab restart
+  restartLab = () => {
+    const { reset, resetFractionSpot } = this.props;
+    this.setState({ ...initialState }, () => {
+      reset();
+      resetFractionSpot();
     });
-  };
-
-  // called when drag mode is enabled from the check box
-  handleDrawingMode = () => {
-    const { isDrawingMode } = this.state;
-    this.setState({ isDrawingMode: !isDrawingMode }); // toggle drawing mode
-  };
-
-  // this is currently not used since all the circles are not aligned
-  handleDragMove = (e, i) => {
-    const { points } = this.state;
-    const newPoints = [...points];
-    newPoints[i].x = e.target.x();
-    newPoints[i].y = e.target.y();
-    this.setState({ points: newPoints });
-  };
+  }
 
   render() {
     const {
@@ -135,6 +133,8 @@ class Main extends Component {
       showSideMenu,
       themeColor,
       nodeStatus,
+      theoremApplicable,
+      fraction,
     } = this.props;
 
     const {
@@ -143,11 +143,9 @@ class Main extends Component {
       circleOnePoints,
       circleTwoPoints,
       isMouseInside,
-      circleOneShape,
-      circleTwoShape,
-      isDrawingMode,
-      isDrawing,
-      circleKind,
+      firstClickedPoint,
+      secondClickedPoint,
+      mouseMoving,
     } = this.state;
 
     const scale = Math.min(
@@ -155,49 +153,119 @@ class Main extends Component {
       window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
     );
 
-    const circleToDraw = circleKind === 'circleOne' ? circleOneShape : circleTwoShape;
-    const currentLineSize = circleKind === 'circleOne' ? '8cm' : '13cm';
-    const currentDistance = circleKind === 'circleOne' ? 160 : 260;
-
     return (
       <main
         className={classNames(classes.content, {
           [classes.contentShift]: showSideMenu,
         })}
       >
-        { showHeader ? (
-          <div className={classes.drawerHeader} />
-        ) : ''
-        }
-        { showHeader ? ''
-          : (
-            <Fab
-              color="primary"
-              aria-label="Add"
-              onClick={this.handleToggleSideMenu(!showSideMenu)}
-              className={classes.fab}
-              style={{ backgroundColor: themeColor, outline: 'none' }}
-            >
-              { showSideMenu ? <ChevronRightIcon /> : <MenuIcon style={{ color: 'white' }} /> }
-            </Fab>
-          )
-        }
+        {showHeader ? <div className={classes.drawerHeader} /> : ''}
+        {showHeader ? (
+          ''
+        ) : (
+          <Fab
+            color="primary"
+            aria-label="Add"
+            onClick={this.handleToggleSideMenu(!showSideMenu)}
+            className={classes.fab}
+            style={{ backgroundColor: themeColor, outline: 'none' }}
+          >
+            {showSideMenu ? (
+              <ChevronRightIcon />
+            ) : (
+              <MenuIcon style={{ color: 'white' }} />
+            )}
+          </Fab>
+        )}
 
         <div className="main-container">
-          <FormControlLabel
-            control={(
+          {theoremApplicable.circleChoosed
+            && theoremApplicable.circleChoosed === 'circleOne'
+            && ((fraction.fraction1_spot1 === 'AD'
+              && fraction.fraction1_spot2 === 'AB')
+              || (fraction.fraction1_spot1 === 'DE'
+                && fraction.fraction1_spot2 === 'BC'))
+            && ((fraction.fraction2_spot1 === 'DE'
+              && fraction.fraction2_spot2 === 'BC')
+              || (fraction.fraction2_spot1 === 'AD'
+                && fraction.fraction2_spot2 === 'AB')) && (
+                <div className="container alert alert-success">
+                  <span>Felicitations, le rapport de proportionnalite est correcte</span>
+                  <IconButton onClick={this.restartLab}>
+                    <ChevronLeftIcon />
+Reprendre
+                  </IconButton>
+                </div>
+          )}
+
+          {theoremApplicable.circleChoosed
+            && theoremApplicable.circleChoosed === 'circleTwo'
+            && ((fraction.fraction1_spot1 === 'AF'
+              && fraction.fraction1_spot2 === 'AB')
+              || (fraction.fraction1_spot1 === 'FG'
+                && fraction.fraction1_spot2 === 'BC'))
+            && ((fraction.fraction2_spot1 === 'FG'
+              && fraction.fraction2_spot2 === 'BC')
+              || (fraction.fraction2_spot1 === 'AF'
+                && fraction.fraction2_spot2 === 'AB')) && (
+                <div className="container alert alert-success">
+                  <span>Felicitations, le rapport de proportionnalite est correcte</span>
+                  <IconButton onClick={this.restartLab}>
+                    <ChevronLeftIcon />
+Reprendre
+                  </IconButton>
+                </div>
+          )}
+
+          {/* <FormControlLabel
+            control={
               <Checkbox
                 checked={isDrawingMode}
                 onChange={this.handleDrawingMode}
-                value="checkDrawer"
+                value='checkDrawer'
                 style={{ color: themeColor }}
               />
-            )}
-            label="Drawing Mode"
-          />
+            }
+            label='Drawing Mode'
+          /> */}
           {/* using react konva stage and needed tags for all the simulations */}
           {/* circleOne and circleTwo are the node that can be cliked to draw lines */}
+          <div className="container">
+            {theoremApplicable.status && (
+              <div className="resultMessage alert alert-success">
+                <h3>Theoreme de Thales applicable</h3>
+                <p>
+                  Felicitations, les condition requise pour appliquer le
+                  Theoreme de Thales sont respecter!
+                </p>
+                <p>
+                  <CreateFormula />
+                </p>
+              </div>
+            )}
+
+            {theoremApplicable.status === false && (
+              <div className="resultMessage alert alert-danger">
+                <h3>Theoreme de Thales non applicable</h3>
+                <p>
+                  Desoler, les condition requise pour appliquer le Theoreme de
+                  Thales ne sont pas respecter!
+                </p>
+              </div>
+            )}
+
+            {!secondClickedPoint && (
+              <div className="resultMessage alert alert-info">
+                <h3>Instuctions</h3>
+                <p>
+                  Cliquer sur un point et tirez la ligne vers un autre point
+                  afin de decrire le theorem de Thales!
+                </p>
+              </div>
+            )}
+          </div>
           <Stage
+            onMouseMove={this.handleStageMove}
             width={window.innerWidth}
             height={window.innerHeight}
             scaleX={scale}
@@ -212,13 +280,11 @@ class Main extends Component {
               textSize={textSize}
               radius={radius}
               shadowBlur={shadowBlur}
-              points={
-                [
-                  { x: points[0].x, y: points[0].y },
-                  { x: points[1].x, y: points[1].y },
-                  { x: points[2].x, y: points[2].y },
-                ]
-              }
+              points={[
+                { x: points[0].x, y: points[0].y },
+                { x: points[1].x, y: points[1].y },
+                { x: points[2].x, y: points[2].y },
+              ]}
             />
             <Layer>
               <CircleOne
@@ -229,34 +295,22 @@ class Main extends Component {
                 themeColor={themeColor}
                 handleMouseLeave={this.handleMouseLeave}
                 handleMouseEnter={this.handleMouseEnter}
-                isDrawing={isDrawing}
                 handleClick={e => this.handleClick(e, 'circleOne')}
                 nodeStatus={nodeStatus}
               />
-              {circleToDraw.map(shape => (
-                <Fragment>
-                  <Line
-                    points={
-                      [
-                        shape.x,
-                        shape.y,
-                        shape.width,
-                        shape.height,
-                      ]
-                    }
-                    stroke={themeColor}
-                    strokeWidth={strokeWidth}
-                  />
-                  <Text
-                    x={shape.x - currentDistance}
-                    y={shape.y - 30}
-                    text={currentLineSize}
-                    fontSize={textSize}
-                    fill={color}
-                  />
-                </Fragment>
-              ))
-              }
+              {firstClickedPoint && (
+                <Line
+                  x={firstClickedPoint.x}
+                  y={firstClickedPoint.y}
+                  points={[
+                    0,
+                    0,
+                    secondClickedPoint ? secondClickedPoint.x : mouseMoving.x,
+                    secondClickedPoint ? secondClickedPoint.y : mouseMoving.y,
+                  ]}
+                  stroke="rgb(0, 150, 136)"
+                />
+              )}
               <CircleTwo
                 circleTwoPoints={circleTwoPoints}
                 stroke={isMouseInside ? themeColor : circleStroke}
@@ -281,9 +335,14 @@ Main.propTypes = {
   themeColor: PropTypes.string.isRequired,
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
-  dispatchNode: PropTypes.func.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
   nodeStatus: PropTypes.func.isRequired,
+  reset: PropTypes.func.isRequired,
+  resetFractionSpot: PropTypes.func.isRequired,
+  applyTheorem: PropTypes.func.isRequired,
+  dontApplyTheorem: PropTypes.func.isRequired,
+  fraction: PropTypes.shape({}).isRequired,
+  theoremApplicable: PropTypes.bool.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -292,11 +351,17 @@ const mapStateToProps = state => ({
   showSideMenu: state.layout.showSideMenu,
   node: state.simulation.node,
   nodeStatus: state.simulation.nodeStatus,
+  theoremApplicable: state.theoremCanApply,
+  fraction: state.fraction,
 });
 
 const mapDispatchToProps = {
   dispatchToggleSideMenu: toggleSideMenu,
   dispatchNode: toggleNode,
+  applyTheorem: theoremApply,
+  dontApplyTheorem: theoremDontApply,
+  reset: resetLab,
+  resetFractionSpot: resetLabFractionSpot,
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Main);

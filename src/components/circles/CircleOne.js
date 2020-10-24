@@ -48,6 +48,7 @@ const CircleOne = ({
         strokeWidth={strokeWidth}
         shadowBlur={shadowBlur}
         fill={themeColor}
+        onClick={handleClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       />
@@ -103,10 +104,12 @@ CircleOne.propTypes = {
     B: PropTypes.string.isRequired,
     C: PropTypes.string.isRequired,
   }).isRequired,
-  points: PropTypes.arrayOf(PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  })).isRequired,
+  points: PropTypes.arrayOf(
+    PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
   stroke: PropTypes.string.isRequired,
   themeColor: PropTypes.string.isRequired,
   circleOnePoints: PropTypes.shape({}).isRequired,
