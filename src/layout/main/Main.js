@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+// import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+// import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ReplayIcon from '@material-ui/icons/Replay';
 import { Layer, Line, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import './Main.css';
@@ -126,6 +128,44 @@ class Main extends Component {
     });
   }
 
+  checkFraction = () => {
+    const { theoremApplicable, fraction } = this.props;
+
+    if (
+      !fraction.fraction1_spot1
+      || !fraction.fraction1_spot2
+      || !fraction.fraction2_spot1
+      || !fraction.fraction2_spot2) {
+      return null;
+    }
+
+    if (theoremApplicable.circleChoosed && theoremApplicable.circleChoosed === 'circleOne') {
+      if (
+        ((fraction.fraction1_spot1 === 'AD' && fraction.fraction1_spot2 === 'AB')
+        || (fraction.fraction1_spot1 === 'DE' && fraction.fraction1_spot2 === 'BC'))
+        && ((fraction.fraction2_spot1 === 'DE' && fraction.fraction2_spot2 === 'BC')
+        || (fraction.fraction2_spot1 === 'AD' && fraction.fraction2_spot2 === 'AB'))
+      ) {
+        return true;
+      }
+      return false;
+    }
+    if (theoremApplicable.circleChoosed && theoremApplicable.circleChoosed === 'circleTwo') {
+      if (
+        ((fraction.fraction1_spot1 === 'AF' && fraction.fraction1_spot2 === 'AB')
+        || (fraction.fraction1_spot1 === 'FG' && fraction.fraction1_spot2 === 'BC'))
+        && ((fraction.fraction2_spot1 === 'FG' && fraction.fraction2_spot2 === 'BC')
+        || (fraction.fraction2_spot1 === 'AF' && fraction.fraction2_spot2 === 'AB'))
+      ) {
+        return true;
+      }
+      return false;
+    }
+    return null;
+  }
+
+  checkCondition = (condition, then, otherwise) => (condition ? then : otherwise)
+
   render() {
     const {
       classes,
@@ -134,7 +174,7 @@ class Main extends Component {
       themeColor,
       nodeStatus,
       theoremApplicable,
-      fraction,
+      // fraction,
     } = this.props;
 
     const {
@@ -179,43 +219,23 @@ class Main extends Component {
         )}
 
         <div className="main-container">
-          {theoremApplicable.circleChoosed
-            && theoremApplicable.circleChoosed === 'circleOne'
-            && ((fraction.fraction1_spot1 === 'AD'
-              && fraction.fraction1_spot2 === 'AB')
-              || (fraction.fraction1_spot1 === 'DE'
-                && fraction.fraction1_spot2 === 'BC'))
-            && ((fraction.fraction2_spot1 === 'DE'
-              && fraction.fraction2_spot2 === 'BC')
-              || (fraction.fraction2_spot1 === 'AD'
-                && fraction.fraction2_spot2 === 'AB')) && (
-                <div className="container alert alert-success">
-                  <span>Felicitations, le rapport de proportionnalite est correcte</span>
-                  <IconButton onClick={this.restartLab}>
-                    <ChevronLeftIcon />
-Reprendre
-                  </IconButton>
-                </div>
-          )}
+          <Button variant="outlined" color="secondary" onClick={this.restartLab}>
+            <ReplayIcon />
+            Reprendre
+          </Button>
 
-          {theoremApplicable.circleChoosed
-            && theoremApplicable.circleChoosed === 'circleTwo'
-            && ((fraction.fraction1_spot1 === 'AF'
-              && fraction.fraction1_spot2 === 'AB')
-              || (fraction.fraction1_spot1 === 'FG'
-                && fraction.fraction1_spot2 === 'BC'))
-            && ((fraction.fraction2_spot1 === 'FG'
-              && fraction.fraction2_spot2 === 'BC')
-              || (fraction.fraction2_spot1 === 'AF'
-                && fraction.fraction2_spot2 === 'AB')) && (
-                <div className="container alert alert-success">
-                  <span>Felicitations, le rapport de proportionnalite est correcte</span>
-                  <IconButton onClick={this.restartLab}>
-                    <ChevronLeftIcon />
-Reprendre
-                  </IconButton>
-                </div>
-          )}
+          {
+            this.checkCondition(this.checkFraction() === null, null,
+              this.checkCondition(this.checkFraction(),
+                <div className="successMessage alert alert-success">
+                  <h3>Félicitations !</h3>
+                  <p>Bravo, le rapport de proportionnalité est correcte.</p>
+                </div>,
+                <div className="successMessage alert alert-danger">
+                  <h3>Erreur !</h3>
+                  <p>Desolé, le rapport de proportionnalité est incorrecte.</p>
+                </div>))
+          }
 
           {/* <FormControlLabel
             control={
@@ -232,11 +252,11 @@ Reprendre
           {/* circleOne and circleTwo are the node that can be cliked to draw lines */}
           <div className="container">
             {theoremApplicable.status && (
-              <div className="resultMessage alert alert-success">
-                <h3>Theoreme de Thales applicable</h3>
+              <div className="createMessage alert alert-success">
+                <h3>Théorème de Thalès applicable</h3>
                 <p>
-                  Felicitations, les condition requise pour appliquer le
-                  Theoreme de Thales sont respecter!
+                  Félicitations, les conditions requises pour appliquer le
+                  Théorème de Thalès sont respectées!
                 </p>
                 <p>
                   <CreateFormula />
@@ -244,22 +264,27 @@ Reprendre
               </div>
             )}
 
-            {theoremApplicable.status === false && (
+            {theoremApplicable.status === false
+              && secondClickedPoint && (
               <div className="resultMessage alert alert-danger">
-                <h3>Theoreme de Thales non applicable</h3>
+                <h3>Théorème de Thalès non applicable</h3>
                 <p>
-                  Desoler, les condition requise pour appliquer le Theoreme de
-                  Thales ne sont pas respecter!
+                  Désoler, les conditions requises pour appliquer le Théorème de
+                  Thalès ne sont pas respectées!
+                  <Button color="secondary" onClick={this.restartLab}>
+                    <ReplayIcon />
+                    Reprendre
+                  </Button>
                 </p>
               </div>
             )}
 
             {!secondClickedPoint && (
               <div className="resultMessage alert alert-info">
-                <h3>Instuctions</h3>
+                <h3>Instructions</h3>
                 <p>
-                  Cliquer sur un point et tirez la ligne vers un autre point
-                  afin de decrire le theorem de Thales!
+                  Cliquer sur un point et tirer la ligne vers un autre point
+                  afin de décrire le Théorème de Thalès!
                 </p>
               </div>
             )}

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Main from '../layout/main/Main';
 import SideMenu from '../layout/sidemenu/SideMenu';
+import Refresher from '../components/refresher/Refresher';
 import Styles from '../layout/sidemenu/Styles';
 import { AppState } from '../config/AppState';
 
@@ -20,6 +21,7 @@ class MainView extends Component {
       <div className={classes.root}>
         <Main />
         <SideMenu node={node} />
+        <Refresher />
       </div>
     );
   }

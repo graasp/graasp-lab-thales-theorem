@@ -7,6 +7,8 @@
     "Display Lab title": "Afficher le titre du Lab",
     "Thales' Theorem": "Propriété de Thalès",
     "Description": "Description",
-    "Re align": "Re aligner"
+    "Re align": "Re aligner",
+    "Instructions": "Instructions",
+    "Click on a point and drag the line to another point to describe Thales's theorem!": "Cliquer sur un point et tirez la ligne vers un autre point afin de décrire le théoreme de Thalès!"
   }
 }

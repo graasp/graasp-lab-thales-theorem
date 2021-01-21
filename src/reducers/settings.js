@@ -5,7 +5,7 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-  defaultLang: 'en',
+  defaultLang: 'fr',
   themeColor: 'rgb(103, 58, 183)',
   showTitle: true,
 };

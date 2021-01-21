@@ -132,13 +132,13 @@ class CreateFormula extends Component {
       : { numerator: 'AG', denominator: 'AC' };
     return (
       <div className="formulaRoot">
-        <h6>Determiner les rapports de proportionalite</h6>
+        <h6>Déterminer les rapports de proportionalité</h6>
         <p>
-          Tirez les segments concernes et placer les dans les fraction de facon
-          a etablir le rapport de proportionalite du Theorem de Thales
+          Tirez les segments concernés et placer les dans les fractions de facon
+          a établir le rapport de proportionalité du Théorème de Thalès
         </p>
         <div>
-          <Stage width={500} height={140}>
+          <Stage width={window.innerWidth / 4} height={140}>
             <Layer>
               <Fraction
                 numerator={{ x: 5, text: appliedOnCircle.numerator }}
