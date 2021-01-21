@@ -6,7 +6,7 @@ import {
 
 const INITIAL_STATE = {
   defaultLang: 'fr',
-  themeColor: 'rgb(103, 58, 183)',
+  themeColor: '#2196f3',
   showTitle: true,
 };
 

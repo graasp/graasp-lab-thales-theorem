@@ -219,10 +219,10 @@ class Main extends Component {
         )}
 
         <div className="main-container">
-          <Button variant="outlined" color="secondary" onClick={this.restartLab}>
+          {/* <Button variant="outlined" color="secondary" onClick={this.restartLab}>
             <ReplayIcon />
             Reprendre
-          </Button>
+          </Button> */}
 
           {
             this.checkCondition(this.checkFraction() === null, null,
@@ -333,7 +333,7 @@ class Main extends Component {
                     secondClickedPoint ? secondClickedPoint.x : mouseMoving.x,
                     secondClickedPoint ? secondClickedPoint.y : mouseMoving.y,
                   ]}
-                  stroke="rgb(0, 150, 136)"
+                  stroke="#2196f3"
                 />
               )}
               <CircleTwo
