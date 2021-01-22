@@ -2,25 +2,6 @@
   padding: 1rem;
 }
 
-.resultMessage {
-  position: absolute;
-  left: 30%;
-  width: 30%;
-  z-index: 9999;
-}
-.successMessage {
-  position: absolute;
-  left: 25%;
-  width: 30%;
-  z-index: 9999;
-}
-.createMessage {
-  position: absolute;
-  left: 55%;
-  width: 30%;
-  z-index: 9999;
-}
-
 Button:focus {
     border: none !important;
     outline: none !important;

@@ -11,7 +11,7 @@ const styles = theme => ({
     bottom: theme.spacing.unit * 12,
     position: 'fixed',
     // position above side menu
-    zIndex: 10000,
+    zIndex: 1,
   },
 });
 

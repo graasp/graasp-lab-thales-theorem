@@ -1,0 +1,2 @@
+export const CLICK_POINT = 'CLICK_POINT';
+export const FRACTION_CHECK = 'FRACTION_CHECK';

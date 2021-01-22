@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Stage, Layer, Text } from 'react-konva';
+// import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
 import { setFractionSpot as setFractionSpotLab } from '../../actions';
 import Fraction from './fraction';
 import './index.css';
@@ -130,6 +131,7 @@ class CreateFormula extends Component {
     const appliedOnCircle = theoremApplicable.circleChoosed === 'circleOne'
       ? { numerator: 'AE', denominator: 'AC' }
       : { numerator: 'AG', denominator: 'AC' };
+
     return (
       <div className="formulaRoot">
         <h6>Déterminer les rapports de proportionalité</h6>
@@ -138,7 +140,10 @@ class CreateFormula extends Component {
           a établir le rapport de proportionalité du Théorème de Thalès
         </p>
         <div>
-          <Stage width={window.innerWidth / 4} height={140}>
+          <Stage
+            width={380}
+            height={140}
+          >
             <Layer>
               <Fraction
                 numerator={{ x: 5, text: appliedOnCircle.numerator }}

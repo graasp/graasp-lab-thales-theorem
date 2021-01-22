@@ -5,11 +5,9 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 // import IconButton from '@material-ui/core/IconButton';
-import Button from '@material-ui/core/Button';
 // import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ReplayIcon from '@material-ui/icons/Replay';
 import { Layer, Line, Stage } from 'react-konva';
 import Styles from '../sidemenu/Styles';
 import './Main.css';
@@ -19,13 +17,14 @@ import {
   resetFractionSpot as resetLabFractionSpot,
   toggleSideMenu,
   toggleNode,
+  clickOnPoints,
+  checkFraction,
   applyTheorem as theoremApply,
   dontApplyTheorem as theoremDontApply,
 } from '../../actions';
 import Triangle from '../../components/triangle/Triangle';
 import CircleOne from '../../components/circles/CircleOne';
 import CircleTwo from '../../components/circles/CircleTwo';
-import CreateFormula from '../../components/formula';
 import {
   CANVAS_VIRTUAL_WIDTH,
   CANVAS_VIRTUAL_HEIGHT,
@@ -66,7 +65,7 @@ class Main extends Component {
   // called when any circle is clicked to draw the line
   handleClick = (e) => {
     const { firstClickedPoint } = this.state;
-    const { applyTheorem, dontApplyTheorem } = this.props;
+    const { applyTheorem, dontApplyTheorem, dispatchClickOnPoints } = this.props;
 
     const { x, y } = e.target.attrs;
     if (firstClickedPoint) {
@@ -81,6 +80,14 @@ class Main extends Component {
         },
         () => {
           const { secondClickedPoint, secondClickedPointRef } = this.state;
+          dispatchClickOnPoints({
+            secondClickedPoint: {
+              x: x - firstClickedPoint.x,
+              y: y - firstClickedPoint.y,
+            },
+            secondClickedPointRef: e.target,
+          });
+
           if (
             secondClickedPoint
             && secondClickedPoint.y === 0
@@ -119,23 +126,15 @@ class Main extends Component {
     this.setState({ mouseMoving: { x, y } });
   };
 
-  // Lab restart
-  restartLab = () => {
-    const { reset, resetFractionSpot } = this.props;
-    this.setState({ ...initialState }, () => {
-      reset();
-      resetFractionSpot();
-    });
-  }
-
   checkFraction = () => {
-    const { theoremApplicable, fraction } = this.props;
+    const { theoremApplicable, fraction, dispatchCheckFraction } = this.props;
 
     if (
       !fraction.fraction1_spot1
       || !fraction.fraction1_spot2
       || !fraction.fraction2_spot1
       || !fraction.fraction2_spot2) {
+      dispatchCheckFraction(null);
       return null;
     }
 
@@ -146,8 +145,10 @@ class Main extends Component {
         && ((fraction.fraction2_spot1 === 'DE' && fraction.fraction2_spot2 === 'BC')
         || (fraction.fraction2_spot1 === 'AD' && fraction.fraction2_spot2 === 'AB'))
       ) {
+        dispatchCheckFraction(true);
         return true;
       }
+      dispatchCheckFraction(false);
       return false;
     }
     if (theoremApplicable.circleChoosed && theoremApplicable.circleChoosed === 'circleTwo') {
@@ -157,14 +158,15 @@ class Main extends Component {
         && ((fraction.fraction2_spot1 === 'FG' && fraction.fraction2_spot2 === 'BC')
         || (fraction.fraction2_spot1 === 'AF' && fraction.fraction2_spot2 === 'AB'))
       ) {
+        dispatchCheckFraction(true);
         return true;
       }
+      dispatchCheckFraction(false);
       return false;
     }
+    dispatchCheckFraction(null);
     return null;
   }
-
-  checkCondition = (condition, then, otherwise) => (condition ? then : otherwise)
 
   render() {
     const {
@@ -173,7 +175,7 @@ class Main extends Component {
       showSideMenu,
       themeColor,
       nodeStatus,
-      theoremApplicable,
+      // theoremApplicable,
       // fraction,
     } = this.props;
 
@@ -191,7 +193,7 @@ class Main extends Component {
     const scale = Math.min(
       window.innerWidth / CANVAS_VIRTUAL_WIDTH,
       window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
-    );
+    ) - 0.15;
 
     return (
       <main
@@ -219,76 +221,13 @@ class Main extends Component {
         )}
 
         <div className="main-container">
-          <Button variant="outlined" color="secondary" onClick={this.restartLab}>
+          {/* <Button variant="outlined" color="secondary" onClick={this.restartLab}>
             <ReplayIcon />
             Reprendre
-          </Button>
+          </Button> */}
 
-          {
-            this.checkCondition(this.checkFraction() === null, null,
-              this.checkCondition(this.checkFraction(),
-                <div className="successMessage alert alert-success">
-                  <h3>Félicitations !</h3>
-                  <p>Bravo, le rapport de proportionnalité est correcte.</p>
-                </div>,
-                <div className="successMessage alert alert-danger">
-                  <h3>Erreur !</h3>
-                  <p>Desolé, le rapport de proportionnalité est incorrecte.</p>
-                </div>))
-          }
+          {this.checkFraction()}
 
-          {/* <FormControlLabel
-            control={
-              <Checkbox
-                checked={isDrawingMode}
-                onChange={this.handleDrawingMode}
-                value='checkDrawer'
-                style={{ color: themeColor }}
-              />
-            }
-            label='Drawing Mode'
-          /> */}
-          {/* using react konva stage and needed tags for all the simulations */}
-          {/* circleOne and circleTwo are the node that can be cliked to draw lines */}
-          <div className="container">
-            {theoremApplicable.status && (
-              <div className="createMessage alert alert-success">
-                <h3>Théorème de Thalès applicable</h3>
-                <p>
-                  Félicitations, les conditions requises pour appliquer le
-                  Théorème de Thalès sont respectées!
-                </p>
-                <p>
-                  <CreateFormula />
-                </p>
-              </div>
-            )}
-
-            {theoremApplicable.status === false
-              && secondClickedPoint && (
-              <div className="resultMessage alert alert-danger">
-                <h3>Théorème de Thalès non applicable</h3>
-                <p>
-                  Désoler, les conditions requises pour appliquer le Théorème de
-                  Thalès ne sont pas respectées!
-                  <Button color="secondary" onClick={this.restartLab}>
-                    <ReplayIcon />
-                    Reprendre
-                  </Button>
-                </p>
-              </div>
-            )}
-
-            {!secondClickedPoint && (
-              <div className="resultMessage alert alert-info">
-                <h3>Instructions</h3>
-                <p>
-                  Cliquer sur un point et tirer la ligne vers un autre point
-                  afin de décrire le Théorème de Thalès!
-                </p>
-              </div>
-            )}
-          </div>
           <Stage
             onMouseMove={this.handleStageMove}
             width={window.innerWidth}
@@ -361,9 +300,11 @@ Main.propTypes = {
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
+  dispatchClickOnPoints: PropTypes.func.isRequired,
+  dispatchCheckFraction: PropTypes.func.isRequired,
   nodeStatus: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired,
-  resetFractionSpot: PropTypes.func.isRequired,
+  // reset: PropTypes.func.isRequired,
+  // resetFractionSpot: PropTypes.func.isRequired,
   applyTheorem: PropTypes.func.isRequired,
   dontApplyTheorem: PropTypes.func.isRequired,
   fraction: PropTypes.shape({}).isRequired,
@@ -387,6 +328,8 @@ const mapDispatchToProps = {
   dontApplyTheorem: theoremDontApply,
   reset: resetLab,
   resetFractionSpot: resetLabFractionSpot,
+  dispatchClickOnPoints: clickOnPoints,
+  dispatchCheckFraction: checkFraction,
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Main);
