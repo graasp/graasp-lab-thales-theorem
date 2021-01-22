@@ -272,7 +272,7 @@ class Main extends Component {
                     secondClickedPoint ? secondClickedPoint.x : mouseMoving.x,
                     secondClickedPoint ? secondClickedPoint.y : mouseMoving.y,
                   ]}
-                  stroke="rgb(0, 150, 136)"
+                  stroke="#2196f3"
                 />
               )}
               <CircleTwo
