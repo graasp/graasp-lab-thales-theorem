@@ -80,8 +80,7 @@ class SideMenu extends Component {
             <div className="resultMessage p-3">
               <h3>Instructions</h3>
               <p>
-                Cliquer sur un point et tirer la ligne vers un autre point
-                afin de décrire le Théorème de Thalès!
+                {t('Click on a point and drag the line to another point to describe Thales\'s theorem!')}
               </p>
             </div>
           )}
@@ -90,22 +89,21 @@ class SideMenu extends Component {
             this.checkCondition(fractionCheck === null, null,
               this.checkCondition(fractionCheck,
                 <div className="successMessage alert alert-success m-3">
-                  <h3>Félicitations !</h3>
-                  <p>Bravo, le rapport de proportionnalité est correcte.</p>
+                  <h3>{t('Congratulation !')}</h3>
+                  <p>{t('Good job, the proportionality ratio is correct.')}</p>
                 </div>,
                 <div className="successMessage alert alert-danger m-3">
-                  <h3>Erreur !</h3>
-                  <p>Desolé, le rapport de proportionnalité est incorrecte.</p>
+                  <h3>{t('Error !')}</h3>
+                  <p>{t('Sorry, the proportionality ratio is incorrect.')}</p>
                 </div>))
           }
 
           <div className="container">
             {theoremApplicable.status && (
               <div className="createMessage p-3">
-                <h3>Théorème de Thalès applicable</h3>
+                <h3>{t('Applicable Thales Theorem')}</h3>
                 <p>
-                  Félicitations, les conditions requises pour appliquer le
-                  Théorème de Thalès sont respectées!
+                  {t('Congratulations, the conditions required to apply Thales Theorem have been met!')}
                 </p>
                 <p>
                   <CreateFormula />
@@ -116,13 +114,12 @@ class SideMenu extends Component {
             {theoremApplicable.status === false
               && secondClickedPoint && (
               <div className="resultMessage alert alert-danger mt-3">
-                <h3>Théorème de Thalès non applicable</h3>
+                <h3>{t('Thales theorem not applicable')}</h3>
                 <p>
-                  Désoler, les conditions requises pour appliquer le Théorème de
-                  Thalès ne sont pas respectées!
+                  {t('Sorry, the conditions required to apply Thales\'s Theorem are not met!')}
                   <Button color="secondary" onClick={this.restartLab}>
                     <ReplayIcon />
-                    Reprendre
+                    {t('Restart')}
                   </Button>
                 </p>
               </div>

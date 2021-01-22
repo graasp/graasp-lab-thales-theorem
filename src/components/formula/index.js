@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import { Stage, Layer, Text } from 'react-konva';
 // import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
 import { setFractionSpot as setFractionSpotLab } from '../../actions';
@@ -126,7 +127,7 @@ class CreateFormula extends Component {
   };
 
   render() {
-    const { theoremApplicable } = this.props;
+    const { theoremApplicable, t } = this.props;
     const { proposedSegments } = this.state;
     const appliedOnCircle = theoremApplicable.circleChoosed === 'circleOne'
       ? { numerator: 'AE', denominator: 'AC' }
@@ -134,10 +135,9 @@ class CreateFormula extends Component {
 
     return (
       <div className="formulaRoot">
-        <h6>Déterminer les rapports de proportionalité</h6>
+        <h6>{t('Determine the proportionality ratios')}</h6>
         <p>
-          Tirez les segments concernés et placer les dans les fractions de facon
-          a établir le rapport de proportionalité du Théorème de Thalès
+          {t('Draw the segments concerned and place them in the fractions so as to establish the proportionality ratio of Thales Theorem.')}
         </p>
         <div>
           <Stage
@@ -278,6 +278,8 @@ const mapDispatchToProps = {
 CreateFormula.propTypes = {
   setFractionSpot: PropTypes.func.isRequired,
   theoremApplicable: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
+const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(CreateFormula);
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateFormula);
+export default withTranslation()(ConnectedComponent);

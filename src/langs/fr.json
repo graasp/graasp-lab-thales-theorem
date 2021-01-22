@@ -9,6 +9,18 @@
     "Description": "Description",
     "Re align": "Re aligner",
     "Instructions": "Instructions",
-    "Click on a point and drag the line to another point to describe Thales's theorem!": "Cliquer sur un point et tirez la ligne vers un autre point afin de décrire le théoreme de Thalès!"
+    "Click on a point and drag the line to another point to describe Thales's theorem!": "Cliquer sur un point et tirez la ligne vers un autre point afin de décrire le théoreme de Thalès!",
+    "Congratulation !": "Félicitation !",
+    "Good job, the proportionality ratio is correct.":"Bravo, le rapport de proportionnalité est correcte.",
+    "Error !": "Erreur !",
+    "Sorry, the proportionality ratio is incorrect.": "Desolé, le rapport de proportionnalité est incorrecte.",
+    "Applicable Thales Theorem": "Théorème de Thalès applicable",
+    "Congratulations, the conditions required to apply Thales Theorem have been met!": "Félicitations, les conditions requises pour appliquer le Théorème de Thalès sont respectées!",
+    "Thales theorem not applicable": "Théorème de Thalès non applicable",
+    "Sorry, the conditions required to apply Thales's Theorem are not met!": "Désoler, les conditions requises pour appliquer le Théorème de Thalès ne sont pas respectées!",
+    "Restart": "Reprendre",
+    "Determine the proportionality ratios": "Déterminer les rapports de proportionalité",
+    "Draw the segments concerned and place them in the fractions so as to establish the proportionality ratio of Thales Theorem.": "Tirer les segments concernés et placer les dans les fractions de façon à établir le rapport de proportionalité du Théorème de Thalès.",
+    "Choose among the segments below:": "Choisir parmis les segment ci-dessous:"
   }
 }
