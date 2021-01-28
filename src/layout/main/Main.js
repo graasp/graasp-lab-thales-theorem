@@ -65,11 +65,15 @@ class Main extends Component {
   // called when any circle is clicked to draw the line
   handleClick = (e) => {
     const { firstClickedPoint } = this.state;
-    const { applyTheorem, dontApplyTheorem, dispatchClickOnPoints } = this.props;
+    const {
+      applyTheorem, dontApplyTheorem, dispatchClickOnPoints, dispatchToggleSideMenu,
+    } = this.props;
 
     const { x, y } = e.target.attrs;
     if (firstClickedPoint) {
       // One circle has already been clicked
+      // Open the drawer here...
+      dispatchToggleSideMenu(true);
       this.setState(
         {
           secondClickedPoint: {

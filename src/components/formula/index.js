@@ -19,15 +19,15 @@ class CreateFormula extends Component {
     super(props);
     this.state = {
       proposedSegments: {
-        ae: { x: 0, y: 120 },
-        ag: { x: 40, y: 120 },
-        ac: { x: 80, y: 120 },
-        ad: { x: 120, y: 120 },
-        af: { x: 160, y: 120 },
-        ab: { x: 200, y: 120 },
-        de: { x: 240, y: 120 },
-        fg: { x: 280, y: 120 },
-        bc: { x: 320, y: 120 },
+        ae: { x: 0, y: 100 },
+        ag: { x: 40, y: 100 },
+        ac: { x: 80, y: 100 },
+        ad: { x: 120, y: 100 },
+        af: { x: 160, y: 100 },
+        ab: { x: 200, y: 100 },
+        de: { x: 240, y: 100 },
+        fg: { x: 280, y: 100 },
+        bc: { x: 320, y: 100 },
       },
     };
   }
@@ -135,6 +135,14 @@ class CreateFormula extends Component {
     }
   };
 
+  handleDragMove = (e) => {
+    const { x, y } = e.target.attrs;
+    const theX = Math.max(-0, Math.min(300, x));
+    const theY = Math.max(-0, Math.min(100, y));
+    e.target.x(theX);
+    e.target.y(theY);
+  }
+
   render() {
     const { theoremApplicable, t, fraction } = this.props;
     const {
@@ -179,7 +187,7 @@ class CreateFormula extends Component {
                 divisor={{ x: 135, y: 25 }}
               />
               <Text
-                y={80}
+                y={70}
                 fontSize={20}
                 fill="black"
                 text="Choisir parmis les segment ci-dessous:"
@@ -188,6 +196,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ae.x}
                 y={proposedSegments.ae.y}
                 text="AE"
@@ -198,6 +207,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ag.x}
                 y={proposedSegments.ag.y}
                 text="AG"
@@ -208,6 +218,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ac.x}
                 y={proposedSegments.ac.y}
                 text="AC"
@@ -218,6 +229,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ad.x}
                 y={proposedSegments.ad.y}
                 text="AD"
@@ -228,6 +240,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.af.x}
                 y={proposedSegments.af.y}
                 text="AF"
@@ -238,6 +251,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ab.x}
                 y={proposedSegments.ab.y}
                 text="AB"
@@ -248,6 +262,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.de.x}
                 y={proposedSegments.de.y}
                 text="DE"
@@ -258,6 +273,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.fg.x}
                 y={proposedSegments.fg.y}
                 text="FG"
@@ -268,6 +284,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.bc.x}
                 y={proposedSegments.bc.y}
                 text="BC"
