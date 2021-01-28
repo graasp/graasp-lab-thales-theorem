@@ -1,10 +1,16 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Stage, Layer, Text } from 'react-konva';
+
 // import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
-import { setFractionSpot as setFractionSpotLab } from '../../actions';
+import {
+  setFractionSpot as setFractionSpotLab,
+  unsetFractionSpot as unsetFractionSpotLab,
+} from '../../actions';
+
 import Fraction from './fraction';
 import './index.css';
 
@@ -28,7 +34,7 @@ class CreateFormula extends Component {
 
   snapToClosestPosition = (segment, textLastPosition, text) => {
     const { proposedSegments } = this.state;
-    const { setFractionSpot } = this.props;
+    const { setFractionSpot, unsetFractionSpot } = this.props;
     // This method will allow to snap the choosed and dragged segment into the fractions
     if (
       textLastPosition.x >= 53
@@ -98,6 +104,9 @@ class CreateFormula extends Component {
         fractionSpot: 'fraction2_spot1',
         valueSpot: text,
       });
+    } else {
+      // Dispatch unsetFraction here...
+      unsetFractionSpot(text);
     }
   };
 
@@ -127,7 +136,10 @@ class CreateFormula extends Component {
   };
 
   render() {
-    const { theoremApplicable, t } = this.props;
+    const { theoremApplicable, t, fraction } = this.props;
+    const {
+      fraction1_spot1, fraction1_spot2, fraction2_spot1, fraction2_spot2,
+    } = fraction;
     const { proposedSegments } = this.state;
     const appliedOnCircle = theoremApplicable.circleChoosed === 'circleOne'
       ? { numerator: 'AE', denominator: 'AC' }
@@ -152,14 +164,18 @@ class CreateFormula extends Component {
               />
               <Text text="=" x={42} y={12} fontSize={30} fill="grey" />
               <Fraction
-                numerator={{ x: 73 }}
-                denominator={{ x: 73, y: 33 }}
+                noColorNum={!!fraction1_spot1}
+                noColorDeNom={!!fraction1_spot2}
+                numerator={{ x: 73, text: fraction1_spot1 }}
+                denominator={{ x: 73, y: 33, text: fraction1_spot2 }}
                 divisor={{ x: 65, y: 25 }}
               />
               <Text text="=" x={110} y={12} fontSize={30} fill="grey" />
               <Fraction
-                numerator={{ x: 143 }}
-                denominator={{ x: 143, y: 33 }}
+                noColorNum={!!fraction2_spot1}
+                noColorDeNom={!!fraction2_spot2}
+                numerator={{ x: 143, text: fraction2_spot1 }}
+                denominator={{ x: 143, y: 33, text: fraction2_spot2 }}
                 divisor={{ x: 135, y: 25 }}
               />
               <Text
@@ -269,14 +285,18 @@ class CreateFormula extends Component {
 
 const mapStateToProps = state => ({
   theoremApplicable: state.theoremCanApply,
+  fraction: state.fraction,
 });
 
 const mapDispatchToProps = {
   setFractionSpot: setFractionSpotLab,
+  unsetFractionSpot: unsetFractionSpotLab,
 };
 
 CreateFormula.propTypes = {
   setFractionSpot: PropTypes.func.isRequired,
+  unsetFractionSpot: PropTypes.func.isRequired,
+  fraction: PropTypes.shape({}).isRequired,
   theoremApplicable: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
 };
