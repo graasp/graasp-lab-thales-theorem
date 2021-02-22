@@ -7,6 +7,20 @@
     "Display Lab title": "Display Lab title",
     "Thales' Theorem": "Thales' Theorem",
     "Description": "Description",
-    "Re align": "Re align"
+    "Re align": "Re align",
+    "Instructions": "Instructions",
+    "Click on a point and drag the line to another point to describe Thales's theorem!": "Click on a point and drag the line to another point to describe Thales's theorem!",
+    "Congratulation !": "Congratulation !",
+    "Good job, the proportionality ratio is correct.": "Good job, the proportionality ratio is correct.",
+    "Error !": "Error !",
+    "Sorry, the proportionality ratio is incorrect.": "Sorry, the proportionality ratio is incorrect.",
+    "Applicable Thales Theorem": "Applicable Thales Theorem",
+    "Congratulations, the conditions required to apply Thales Theorem have been met!": "Congratulations, the conditions required to apply Thales Theorem have been met!",
+    "Thales theorem not applicable": "Thales theorem not applicable",
+    "Sorry, the conditions required to apply Thales's Theorem are not met!": "Sorry, the conditions required to apply Thales's Theorem are not met!",
+    "Restart": "Restart",
+    "Determine the proportionality ratios": "Determine the proportionality ratios",
+    "Draw the segments concerned and place them in the fractions so as to establish the proportionality ratio of Thales Theorem.": "Draw the segments concerned and place them in the fractions so as to establish the proportionality ratio of Thales Theorem.",
+    "Choose among the segments below:": "Choose among the segments below:"
   }
 }

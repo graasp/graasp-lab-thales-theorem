@@ -9,7 +9,9 @@ class Fraction extends Component {
   }
 
   render() {
-    const { numerator, denominator, divisor } = this.props;
+    const {
+      numerator, denominator, divisor, noColorNum, noColorDeNom,
+    } = this.props;
 
     return (
       <>
@@ -18,6 +20,7 @@ class Fraction extends Component {
           text={numerator.text ? numerator.text : '...'}
           fontStyle="italic"
           fontSize={18}
+          fill={noColorNum ? 'white' : 'black'}
         />
         <Line
           x={divisor.x}
@@ -32,6 +35,7 @@ class Fraction extends Component {
           text={denominator.text ? denominator.text : '...'}
           fontStyle="italic"
           fontSize={18}
+          fill={noColorDeNom ? 'white' : 'black'}
         />
       </>
     );
@@ -44,4 +48,6 @@ Fraction.propTypes = {
   numerator: PropTypes.string.isRequired,
   denominator: PropTypes.string.isRequired,
   divisor: PropTypes.string.isRequired,
+  noColorNum: PropTypes.bool.isRequired,
+  noColorDeNom: PropTypes.bool.isRequired,
 };

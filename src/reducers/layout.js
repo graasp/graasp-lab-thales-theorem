@@ -6,7 +6,7 @@ import {
 } from '../types';
 
 const INITIAL_STATE = {
-  themeColor: 'rgb(0, 150, 136)',
+  themeColor: '#2196f3',
   showHeader: true,
   showSideMenu: false,
   showNerve: false,

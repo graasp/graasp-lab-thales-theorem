@@ -1,8 +1,16 @@
+/* eslint-disable camelcase */
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
 import { Stage, Layer, Text } from 'react-konva';
-import { setFractionSpot as setFractionSpotLab } from '../../actions';
+
+// import { CANVAS_VIRTUAL_WIDTH, CANVAS_VIRTUAL_HEIGHT } from '../../config/constants';
+import {
+  setFractionSpot as setFractionSpotLab,
+  unsetFractionSpot as unsetFractionSpotLab,
+} from '../../actions';
+
 import Fraction from './fraction';
 import './index.css';
 
@@ -11,22 +19,22 @@ class CreateFormula extends Component {
     super(props);
     this.state = {
       proposedSegments: {
-        ae: { x: 0, y: 120 },
-        ag: { x: 40, y: 120 },
-        ac: { x: 80, y: 120 },
-        ad: { x: 120, y: 120 },
-        af: { x: 160, y: 120 },
-        ab: { x: 200, y: 120 },
-        de: { x: 240, y: 120 },
-        fg: { x: 280, y: 120 },
-        bc: { x: 320, y: 120 },
+        ae: { x: 0, y: 100 },
+        ag: { x: 40, y: 100 },
+        ac: { x: 80, y: 100 },
+        ad: { x: 120, y: 100 },
+        af: { x: 160, y: 100 },
+        ab: { x: 200, y: 100 },
+        de: { x: 240, y: 100 },
+        fg: { x: 280, y: 100 },
+        bc: { x: 320, y: 100 },
       },
     };
   }
 
   snapToClosestPosition = (segment, textLastPosition, text) => {
     const { proposedSegments } = this.state;
-    const { setFractionSpot } = this.props;
+    const { setFractionSpot, unsetFractionSpot } = this.props;
     // This method will allow to snap the choosed and dragged segment into the fractions
     if (
       textLastPosition.x >= 53
@@ -96,6 +104,9 @@ class CreateFormula extends Component {
         fractionSpot: 'fraction2_spot1',
         valueSpot: text,
       });
+    } else {
+      // Dispatch unsetFraction here...
+      unsetFractionSpot(text);
     }
   };
 
@@ -124,21 +135,35 @@ class CreateFormula extends Component {
     }
   };
 
+  handleDragMove = (e) => {
+    const { x, y } = e.target.attrs;
+    const theX = Math.max(-0, Math.min(300, x));
+    const theY = Math.max(-0, Math.min(100, y));
+    e.target.x(theX);
+    e.target.y(theY);
+  }
+
   render() {
-    const { theoremApplicable } = this.props;
+    const { theoremApplicable, t, fraction } = this.props;
+    const {
+      fraction1_spot1, fraction1_spot2, fraction2_spot1, fraction2_spot2,
+    } = fraction;
     const { proposedSegments } = this.state;
     const appliedOnCircle = theoremApplicable.circleChoosed === 'circleOne'
       ? { numerator: 'AE', denominator: 'AC' }
       : { numerator: 'AG', denominator: 'AC' };
+
     return (
       <div className="formulaRoot">
-        <h6>Determiner les rapports de proportionalite</h6>
+        <h6>{t('Determine the proportionality ratios')}</h6>
         <p>
-          Tirez les segments concernes et placer les dans les fraction de facon
-          a etablir le rapport de proportionalite du Theorem de Thales
+          {t('Draw the segments concerned and place them in the fractions so as to establish the proportionality ratio of Thales Theorem.')}
         </p>
         <div>
-          <Stage width={500} height={140}>
+          <Stage
+            width={380}
+            height={140}
+          >
             <Layer>
               <Fraction
                 numerator={{ x: 5, text: appliedOnCircle.numerator }}
@@ -147,18 +172,22 @@ class CreateFormula extends Component {
               />
               <Text text="=" x={42} y={12} fontSize={30} fill="grey" />
               <Fraction
-                numerator={{ x: 73 }}
-                denominator={{ x: 73, y: 33 }}
+                noColorNum={!!fraction1_spot1}
+                noColorDeNom={!!fraction1_spot2}
+                numerator={{ x: 73, text: fraction1_spot1 }}
+                denominator={{ x: 73, y: 33, text: fraction1_spot2 }}
                 divisor={{ x: 65, y: 25 }}
               />
               <Text text="=" x={110} y={12} fontSize={30} fill="grey" />
               <Fraction
-                numerator={{ x: 143 }}
-                denominator={{ x: 143, y: 33 }}
+                noColorNum={!!fraction2_spot1}
+                noColorDeNom={!!fraction2_spot2}
+                numerator={{ x: 143, text: fraction2_spot1 }}
+                denominator={{ x: 143, y: 33, text: fraction2_spot2 }}
                 divisor={{ x: 135, y: 25 }}
               />
               <Text
-                y={80}
+                y={70}
                 fontSize={20}
                 fill="black"
                 text="Choisir parmis les segment ci-dessous:"
@@ -167,6 +196,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ae.x}
                 y={proposedSegments.ae.y}
                 text="AE"
@@ -177,6 +207,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ag.x}
                 y={proposedSegments.ag.y}
                 text="AG"
@@ -187,6 +218,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ac.x}
                 y={proposedSegments.ac.y}
                 text="AC"
@@ -197,6 +229,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ad.x}
                 y={proposedSegments.ad.y}
                 text="AD"
@@ -207,6 +240,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.af.x}
                 y={proposedSegments.af.y}
                 text="AF"
@@ -217,6 +251,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.ab.x}
                 y={proposedSegments.ab.y}
                 text="AB"
@@ -227,6 +262,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.de.x}
                 y={proposedSegments.de.y}
                 text="DE"
@@ -237,6 +273,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.fg.x}
                 y={proposedSegments.fg.y}
                 text="FG"
@@ -247,6 +284,7 @@ class CreateFormula extends Component {
               <Text
                 draggable
                 onDragEnd={this.handleDragEnd}
+                onDragMove={this.handleDragMove}
                 x={proposedSegments.bc.x}
                 y={proposedSegments.bc.y}
                 text="BC"
@@ -264,15 +302,21 @@ class CreateFormula extends Component {
 
 const mapStateToProps = state => ({
   theoremApplicable: state.theoremCanApply,
+  fraction: state.fraction,
 });
 
 const mapDispatchToProps = {
   setFractionSpot: setFractionSpotLab,
+  unsetFractionSpot: unsetFractionSpotLab,
 };
 
 CreateFormula.propTypes = {
   setFractionSpot: PropTypes.func.isRequired,
+  unsetFractionSpot: PropTypes.func.isRequired,
+  fraction: PropTypes.shape({}).isRequired,
   theoremApplicable: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
 };
+const ConnectedComponent = connect(mapStateToProps, mapDispatchToProps)(CreateFormula);
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateFormula);
+export default withTranslation()(ConnectedComponent);

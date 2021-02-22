@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
-import IconButton from '@material-ui/core/IconButton';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+// import IconButton from '@material-ui/core/IconButton';
+// import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Fab from '@material-ui/core/Fab';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { Layer, Line, Stage } from 'react-konva';
@@ -17,13 +17,14 @@ import {
   resetFractionSpot as resetLabFractionSpot,
   toggleSideMenu,
   toggleNode,
+  clickOnPoints,
+  checkFraction,
   applyTheorem as theoremApply,
   dontApplyTheorem as theoremDontApply,
 } from '../../actions';
 import Triangle from '../../components/triangle/Triangle';
 import CircleOne from '../../components/circles/CircleOne';
 import CircleTwo from '../../components/circles/CircleTwo';
-import CreateFormula from '../../components/formula';
 import {
   CANVAS_VIRTUAL_WIDTH,
   CANVAS_VIRTUAL_HEIGHT,
@@ -64,11 +65,15 @@ class Main extends Component {
   // called when any circle is clicked to draw the line
   handleClick = (e) => {
     const { firstClickedPoint } = this.state;
-    const { applyTheorem, dontApplyTheorem } = this.props;
+    const {
+      applyTheorem, dontApplyTheorem, dispatchClickOnPoints, dispatchToggleSideMenu,
+    } = this.props;
 
     const { x, y } = e.target.attrs;
     if (firstClickedPoint) {
       // One circle has already been clicked
+      // Open the drawer here...
+      dispatchToggleSideMenu(true);
       this.setState(
         {
           secondClickedPoint: {
@@ -79,6 +84,14 @@ class Main extends Component {
         },
         () => {
           const { secondClickedPoint, secondClickedPointRef } = this.state;
+          dispatchClickOnPoints({
+            secondClickedPoint: {
+              x: x - firstClickedPoint.x,
+              y: y - firstClickedPoint.y,
+            },
+            secondClickedPointRef: e.target,
+          });
+
           if (
             secondClickedPoint
             && secondClickedPoint.y === 0
@@ -117,13 +130,46 @@ class Main extends Component {
     this.setState({ mouseMoving: { x, y } });
   };
 
-  // Lab restart
-  restartLab = () => {
-    const { reset, resetFractionSpot } = this.props;
-    this.setState({ ...initialState }, () => {
-      reset();
-      resetFractionSpot();
-    });
+  checkFraction = () => {
+    const { theoremApplicable, fraction, dispatchCheckFraction } = this.props;
+
+    if (
+      !fraction.fraction1_spot1
+      || !fraction.fraction1_spot2
+      || !fraction.fraction2_spot1
+      || !fraction.fraction2_spot2) {
+      dispatchCheckFraction(null);
+      return null;
+    }
+
+    if (theoremApplicable.circleChoosed && theoremApplicable.circleChoosed === 'circleOne') {
+      if (
+        ((fraction.fraction1_spot1 === 'AD' && fraction.fraction1_spot2 === 'AB')
+        || (fraction.fraction1_spot1 === 'DE' && fraction.fraction1_spot2 === 'BC'))
+        && ((fraction.fraction2_spot1 === 'DE' && fraction.fraction2_spot2 === 'BC')
+        || (fraction.fraction2_spot1 === 'AD' && fraction.fraction2_spot2 === 'AB'))
+      ) {
+        dispatchCheckFraction(true);
+        return true;
+      }
+      dispatchCheckFraction(false);
+      return false;
+    }
+    if (theoremApplicable.circleChoosed && theoremApplicable.circleChoosed === 'circleTwo') {
+      if (
+        ((fraction.fraction1_spot1 === 'AF' && fraction.fraction1_spot2 === 'AB')
+        || (fraction.fraction1_spot1 === 'FG' && fraction.fraction1_spot2 === 'BC'))
+        && ((fraction.fraction2_spot1 === 'FG' && fraction.fraction2_spot2 === 'BC')
+        || (fraction.fraction2_spot1 === 'AF' && fraction.fraction2_spot2 === 'AB'))
+      ) {
+        dispatchCheckFraction(true);
+        return true;
+      }
+      dispatchCheckFraction(false);
+      return false;
+    }
+    dispatchCheckFraction(null);
+    return null;
   }
 
   render() {
@@ -133,8 +179,8 @@ class Main extends Component {
       showSideMenu,
       themeColor,
       nodeStatus,
-      theoremApplicable,
-      fraction,
+      // theoremApplicable,
+      // fraction,
     } = this.props;
 
     const {
@@ -151,7 +197,7 @@ class Main extends Component {
     const scale = Math.min(
       window.innerWidth / CANVAS_VIRTUAL_WIDTH,
       window.innerHeight / CANVAS_VIRTUAL_HEIGHT,
-    );
+    ) - 0.15;
 
     return (
       <main
@@ -179,91 +225,13 @@ class Main extends Component {
         )}
 
         <div className="main-container">
-          {theoremApplicable.circleChoosed
-            && theoremApplicable.circleChoosed === 'circleOne'
-            && ((fraction.fraction1_spot1 === 'AD'
-              && fraction.fraction1_spot2 === 'AB')
-              || (fraction.fraction1_spot1 === 'DE'
-                && fraction.fraction1_spot2 === 'BC'))
-            && ((fraction.fraction2_spot1 === 'DE'
-              && fraction.fraction2_spot2 === 'BC')
-              || (fraction.fraction2_spot1 === 'AD'
-                && fraction.fraction2_spot2 === 'AB')) && (
-                <div className="container alert alert-success">
-                  <span>Felicitations, le rapport de proportionnalite est correcte</span>
-                  <IconButton onClick={this.restartLab}>
-                    <ChevronLeftIcon />
-Reprendre
-                  </IconButton>
-                </div>
-          )}
+          {/* <Button variant="outlined" color="secondary" onClick={this.restartLab}>
+            <ReplayIcon />
+            Reprendre
+          </Button> */}
 
-          {theoremApplicable.circleChoosed
-            && theoremApplicable.circleChoosed === 'circleTwo'
-            && ((fraction.fraction1_spot1 === 'AF'
-              && fraction.fraction1_spot2 === 'AB')
-              || (fraction.fraction1_spot1 === 'FG'
-                && fraction.fraction1_spot2 === 'BC'))
-            && ((fraction.fraction2_spot1 === 'FG'
-              && fraction.fraction2_spot2 === 'BC')
-              || (fraction.fraction2_spot1 === 'AF'
-                && fraction.fraction2_spot2 === 'AB')) && (
-                <div className="container alert alert-success">
-                  <span>Felicitations, le rapport de proportionnalite est correcte</span>
-                  <IconButton onClick={this.restartLab}>
-                    <ChevronLeftIcon />
-Reprendre
-                  </IconButton>
-                </div>
-          )}
+          {this.checkFraction()}
 
-          {/* <FormControlLabel
-            control={
-              <Checkbox
-                checked={isDrawingMode}
-                onChange={this.handleDrawingMode}
-                value='checkDrawer'
-                style={{ color: themeColor }}
-              />
-            }
-            label='Drawing Mode'
-          /> */}
-          {/* using react konva stage and needed tags for all the simulations */}
-          {/* circleOne and circleTwo are the node that can be cliked to draw lines */}
-          <div className="container">
-            {theoremApplicable.status && (
-              <div className="resultMessage alert alert-success">
-                <h3>Theoreme de Thales applicable</h3>
-                <p>
-                  Felicitations, les condition requise pour appliquer le
-                  Theoreme de Thales sont respecter!
-                </p>
-                <p>
-                  <CreateFormula />
-                </p>
-              </div>
-            )}
-
-            {theoremApplicable.status === false && (
-              <div className="resultMessage alert alert-danger">
-                <h3>Theoreme de Thales non applicable</h3>
-                <p>
-                  Desoler, les condition requise pour appliquer le Theoreme de
-                  Thales ne sont pas respecter!
-                </p>
-              </div>
-            )}
-
-            {!secondClickedPoint && (
-              <div className="resultMessage alert alert-info">
-                <h3>Instuctions</h3>
-                <p>
-                  Cliquer sur un point et tirez la ligne vers un autre point
-                  afin de decrire le theorem de Thales!
-                </p>
-              </div>
-            )}
-          </div>
           <Stage
             onMouseMove={this.handleStageMove}
             width={window.innerWidth}
@@ -308,7 +276,7 @@ Reprendre
                     secondClickedPoint ? secondClickedPoint.x : mouseMoving.x,
                     secondClickedPoint ? secondClickedPoint.y : mouseMoving.y,
                   ]}
-                  stroke="rgb(0, 150, 136)"
+                  stroke="#2196f3"
                 />
               )}
               <CircleTwo
@@ -336,9 +304,11 @@ Main.propTypes = {
   showHeader: PropTypes.bool.isRequired,
   showSideMenu: PropTypes.bool.isRequired,
   dispatchToggleSideMenu: PropTypes.func.isRequired,
+  dispatchClickOnPoints: PropTypes.func.isRequired,
+  dispatchCheckFraction: PropTypes.func.isRequired,
   nodeStatus: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired,
-  resetFractionSpot: PropTypes.func.isRequired,
+  // reset: PropTypes.func.isRequired,
+  // resetFractionSpot: PropTypes.func.isRequired,
   applyTheorem: PropTypes.func.isRequired,
   dontApplyTheorem: PropTypes.func.isRequired,
   fraction: PropTypes.shape({}).isRequired,
@@ -362,6 +332,8 @@ const mapDispatchToProps = {
   dontApplyTheorem: theoremDontApply,
   reset: resetLab,
   resetFractionSpot: resetLabFractionSpot,
+  dispatchClickOnPoints: clickOnPoints,
+  dispatchCheckFraction: checkFraction,
 };
 
 const connectedComponent = connect(mapStateToProps, mapDispatchToProps)(Main);
